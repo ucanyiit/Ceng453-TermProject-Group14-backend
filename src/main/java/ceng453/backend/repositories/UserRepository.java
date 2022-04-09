@@ -1,6 +1,6 @@
-package com.example.backend.repositories;
+package ceng453.backend.repositories;
 
-import com.example.backend.models.User;
+import ceng453.backend.models.User;
 import org.springframework.data.repository.CrudRepository;
 
 public interface UserRepository extends CrudRepository<User, Integer> {
