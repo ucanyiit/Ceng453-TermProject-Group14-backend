@@ -27,7 +27,12 @@ public class Game {
     private GameType type;
 
     @OneToMany(mappedBy = "game", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Score> score = new ArrayList<>();
+    private List<Score> scores = new ArrayList<>();
+    @OneToMany(mappedBy = "game", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Player> playersIn = new ArrayList<>();
+    @OneToMany(mappedBy = "game", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Move> movesIn = new ArrayList<>();
+
 
     public Game() {
 
@@ -83,10 +88,18 @@ public class Game {
     }
 
     public List<Score> getScore() {
-        return score;
+        return scores;
     }
 
-    public void setScore(List<Score> score) {
-        this.score = score;
+    public void setScore(List<Score> scores) {
+        this.scores = scores;
+    }
+
+    public List<Player> getPlayersIn() {
+        return playersIn;
+    }
+
+    public void setPlayersIn(List<Player> playersIn) {
+        this.playersIn = playersIn;
     }
 }

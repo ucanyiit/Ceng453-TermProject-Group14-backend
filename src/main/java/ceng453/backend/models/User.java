@@ -1,6 +1,5 @@
 package ceng453.backend.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -20,9 +19,10 @@ public class User {
     private String passwordReminder;
     @CreationTimestamp
     private LocalDateTime createdAt;
-    @JsonIgnore
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Score> score = new ArrayList<>();
+    private List<Score> scores = new ArrayList<>();
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Player> gamesIn = new ArrayList<>();
 
     public User() {
     }
@@ -75,10 +75,18 @@ public class User {
     }
 
     public List<Score> getScore() {
-        return score;
+        return scores;
     }
 
     public void setScore(List<Score> score) {
-        this.score = score;
+        this.scores = score;
+    }
+
+    public List<Player> getGamesIn() {
+        return gamesIn;
+    }
+
+    public void setGamesIn(List<Player> gamesIn) {
+        this.gamesIn = gamesIn;
     }
 }
