@@ -11,18 +11,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ceng453.backend.services.auth.*;
-
+import lombok.RequiredArgsConstructor;
 import javax.xml.ws.Response;
 
 @RequestMapping("api/auth")
+@RequiredArgsConstructor
 @RestController
 public class AuthController {
 
+    // Injection
     private final IAuthenticationService authService;
-
-    public AuthController(IAuthenticationService authService) {
-        this.authService = authService;
-    }
 
     /**
      * This method is used to login a user.
