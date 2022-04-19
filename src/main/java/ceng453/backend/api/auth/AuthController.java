@@ -1,10 +1,7 @@
 package ceng453.backend.api.auth;
 
 import ceng453.backend.models.BaseResponse;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ceng453.backend.services.auth.*;
 import lombok.RequiredArgsConstructor;
-import javax.xml.ws.Response;
 
 @RequestMapping("api/auth")
 @RequiredArgsConstructor

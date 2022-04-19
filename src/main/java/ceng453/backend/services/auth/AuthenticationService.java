@@ -1,13 +1,17 @@
 package ceng453.backend.services.auth;
 
 import ceng453.backend.models.BaseResponse;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.context.annotation.Bean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AuthenticationService implements IAuthenticationService {
+
+    @Autowired
+    private JavaMailSender emailSender;
 
     /**
      * @param username
@@ -22,6 +26,13 @@ public class AuthenticationService implements IAuthenticationService {
 
     @Override
     public ResponseEntity<BaseResponse> register(String username, String email, String password, String passwordRememberQuestion) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("ucanyiittest@gmail.com");
+        message.setTo(email);
+        message.setSubject("Account Activation");
+        message.setText("Welcome to Project Monopoly " + username + ", activate your account here: ");
+        emailSender.send(message);
+
         return null;
     }
 
