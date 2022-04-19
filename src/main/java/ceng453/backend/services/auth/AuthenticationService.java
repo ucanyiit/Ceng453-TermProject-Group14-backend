@@ -81,9 +81,15 @@ public class AuthenticationService implements IAuthenticationService {
     @Override
     public ResponseEntity<BaseResponse> remindPassword(String username) {
 
-        String passwordReminder = userRepository.findByUsername(username).getPasswordReminder();
+        User user = userRepository.findByUsername(username);
+
+        if (user == null) {
+            return new BaseResponse(false, "No user is found with the given username.", "").prepareResponse(HttpStatus.BAD_REQUEST);
+        }
+
+        String passwordReminder = user.getPasswordReminder();
         if (passwordReminder == null) {
-            return new BaseResponse(false, "No password reminder found for this user", "").prepareResponse(HttpStatus.BAD_REQUEST);
+            return new BaseResponse(false, "No password reminder found for this user.", "").prepareResponse(HttpStatus.BAD_REQUEST);
         }
 
         return new BaseResponse(false, passwordReminder, "").prepareResponse(HttpStatus.BAD_REQUEST);
