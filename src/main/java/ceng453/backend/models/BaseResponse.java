@@ -42,7 +42,7 @@ public class BaseResponse {
         this.response = response;
     }
 
-    public ResponseEntity<Object> prepareResponse(HttpStatus status) {
+    public ResponseEntity<BaseResponse> prepareResponse(HttpStatus status) {
         return new ResponseEntity<>(this, status);
     }
 
