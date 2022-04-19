@@ -1,6 +1,8 @@
 package ceng453.backend.services.auth;
 
 import ceng453.backend.models.BaseResponse;
+import ceng453.backend.models.User;
+import ceng453.backend.repositories.UserRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,8 @@ public class AuthenticationService implements IAuthenticationService {
 
     @Autowired
     private JavaMailSender emailSender;
+    @Autowired
+    private UserRepository userRepository;
 
     /**
      * @param username
@@ -55,7 +59,15 @@ public class AuthenticationService implements IAuthenticationService {
     }
 
     @Override
-    public ResponseEntity<BaseResponse> register(String username, String email, String password, String passwordRememberQuestion) {
+    public ResponseEntity<BaseResponse> register(String username, String email, String password, String passwordReminder) {
+
+        User user = new User();
+        user.setUsername(username);
+        user.setEmail(email);
+        user.setPassword(password);
+        user.setPasswordReminder(passwordReminder);
+        userRepository.save(user);
+
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("ucanyiittest@gmail.com");
         message.setTo(email);
@@ -64,6 +76,18 @@ public class AuthenticationService implements IAuthenticationService {
         emailSender.send(message);
 
         return null;
+    }
+
+    @Override
+    public ResponseEntity<BaseResponse> remindPassword(String username) {
+
+        String passwordReminder = userRepository.findByUsername(username).getPasswordReminder();
+        if (passwordReminder == null) {
+            return new BaseResponse(false, "No password reminder found for this user", "").prepareResponse(HttpStatus.BAD_REQUEST);
+        }
+
+        return new BaseResponse(false, passwordReminder, "").prepareResponse(HttpStatus.BAD_REQUEST);
+
     }
 
     @Override

@@ -49,7 +49,7 @@ public class AuthController {
      * @param username: The unique username of the user.
      * @param email: The email of the user.
      * @param password: The password of the user.
-     * @param passwordRememberQuestion: The password remember question set by the user.
+     * @param passwordReminder: The password remember question set by the user.
      * @return true if successful, otherwise false.
      */
     @ApiOperation(
@@ -62,7 +62,23 @@ public class AuthController {
             String username,
             String email,
             String password,
-            String passwordRememberQuestion) {
-        return authService.register(username, email, password, passwordRememberQuestion);
+            String passwordReminder) {
+        return authService.register(username, email, password, passwordReminder);
     }
+
+    /**
+     * This method is used to login a user.
+     * @param username: The unique username of the user.
+     * @return A response entity with the token of the user if successful.
+     */
+    @ApiOperation(
+            value = "Remind Password",
+            notes = "Remind the user password with the given username using password reminder",
+            response = ResponseEntity.class
+    )
+    @PostMapping("/remindPassword")
+    public ResponseEntity<BaseResponse> remindPassword(String username) {
+        return authService.remindPassword(username);
+    }
+
 }
