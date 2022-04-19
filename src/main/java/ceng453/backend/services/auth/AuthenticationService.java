@@ -26,15 +26,21 @@ public class AuthenticationService implements IAuthenticationService {
     @Autowired
     private UserRepository userRepository;
 
-    /**
-     * @param username
-     * @param password
-     * @return
-     */
+
     @Override
     public ResponseEntity<BaseResponse> login(String username, String password) {
-        String token = createToken(username);
-        return new BaseResponse(true, "" , token).prepareResponse(HttpStatus.OK);
+        User user = userRepository.findByUsername(username);
+        if (user == null) {
+            return new BaseResponse(false, "Cannot find the username", "")
+                    .prepareResponse(HttpStatus.UNAUTHORIZED);
+
+        } else if (!user.getPassword().equals(password)) {
+            return new BaseResponse(false, "Wrong password", "")
+                    .prepareResponse(HttpStatus.UNAUTHORIZED);
+        } else {
+            return new BaseResponse(true, "", createToken(username))
+                    .prepareResponse(HttpStatus.OK);
+        }
     }
 
     private String createToken(String username) {
@@ -51,7 +57,7 @@ public class AuthenticationService implements IAuthenticationService {
                                 .map(GrantedAuthority::getAuthority)
                                 .collect(Collectors.toList()))
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 600_000))
+                .setExpiration(new Date(System.currentTimeMillis() + 86_400_000)) // 1 day
                 .signWith(SignatureAlgorithm.HS512,
                         secretKey.getBytes()).compact();
 
@@ -100,4 +106,6 @@ public class AuthenticationService implements IAuthenticationService {
     public ResponseEntity<BaseResponse> logout(String token) {
         return null;
     }
+
+
 }
