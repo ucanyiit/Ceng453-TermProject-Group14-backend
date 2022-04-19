@@ -21,4 +21,6 @@ public interface IAuthenticationService {
             String passwordRememberQuestion);
 
     ResponseEntity<BaseResponse> logout(String token);
+
+    ResponseEntity<BaseResponse> remindPassword(String username);
 }
