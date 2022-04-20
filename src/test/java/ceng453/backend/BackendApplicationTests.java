@@ -19,6 +19,8 @@ import java.nio.charset.StandardCharsets;
 @SpringBootTest
 class BackendApplicationTests {
     private String baseUrl = "http://localhost:8080/";
+
+
     @Test
     void contextLoads() {
         BaseResponse response = new BaseResponse(true, "Success", null);
@@ -31,6 +33,39 @@ class BackendApplicationTests {
             URL url = new URL(baseUrl);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestProperty("accept", "application/json");
+
+            // This line makes the request
+            InputStream responseStream = conn.getInputStream();
+
+            ObjectMapper mapper = new ObjectMapper();
+            BaseResponse apod = mapper.readValue(responseStream, BaseResponse.class);
+
+            StringBuilder textBuilder = new StringBuilder();
+            try (Reader reader = new BufferedReader(new InputStreamReader
+                    (responseStream, Charset.forName(StandardCharsets.UTF_8.name())))) {
+                int c = 0;
+                while ((c = reader.read()) != -1) {
+                    textBuilder.append((char) c);
+                }
+            }
+            // Finally we have the response
+            System.out.println(textBuilder.toString());
+            System.out.println(apod.response);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+    }
+
+    @Test
+    void apiTestRegister1() {
+        try {
+            URL url = new URL(baseUrl + "register");
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestProperty("accept", "application/json");
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestMethod("POST");
+            conn.setDoOutput(true);
 
             // This line makes the request
             InputStream responseStream = conn.getInputStream();
