@@ -29,6 +29,10 @@ public class AuthenticationService implements IAuthenticationService {
 
     @Override
     public ResponseEntity<BaseResponse> login(String username, String password) {
+        if (username == null || password == null) {
+            return new BaseResponse(false, "Username and password are required.", "").prepareResponse(HttpStatus.BAD_REQUEST);
+        }
+
         User user = userRepository.findByUsername(username);
         if (user == null) {
             return new BaseResponse(false, "Cannot find the username", "")
@@ -66,6 +70,9 @@ public class AuthenticationService implements IAuthenticationService {
 
     @Override
     public ResponseEntity<BaseResponse> register(String username, String email, String password, String passwordReminder) {
+        if (username == null || email == null || password == null || passwordReminder == null) {
+            return new BaseResponse(false, "Username, email, password and a password reminder are required.", "").prepareResponse(HttpStatus.BAD_REQUEST);
+        }
 
         User user = new User();
         user.setUsername(username);
@@ -77,15 +84,18 @@ public class AuthenticationService implements IAuthenticationService {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("ucanyiittest@gmail.com");
         message.setTo(email);
-        message.setSubject("Account Activation");
-        message.setText("Welcome to Project Monopoly " + username + ", activate your account here: ");
+        message.setSubject("Monopoly - Hello!");
+        message.setText("Welcome to Project Monopoly, " + username + ". Thank you for registering.");
         emailSender.send(message);
 
-        return null;
-    }
+        return new BaseResponse(true, "You have registered successfully", "")
+                .prepareResponse(HttpStatus.OK);    }
 
     @Override
     public ResponseEntity<BaseResponse> remindPassword(String username) {
+        if (username == null) {
+            return new BaseResponse(false, "Username is required.", "").prepareResponse(HttpStatus.BAD_REQUEST);
+        }
 
         User user = userRepository.findByUsername(username);
 
@@ -98,8 +108,59 @@ public class AuthenticationService implements IAuthenticationService {
             return new BaseResponse(false, "No password reminder found for this user.", "").prepareResponse(HttpStatus.BAD_REQUEST);
         }
 
-        return new BaseResponse(false, passwordReminder, "").prepareResponse(HttpStatus.BAD_REQUEST);
+        return new BaseResponse(true, passwordReminder, "").prepareResponse(HttpStatus.OK);
 
+    }
+
+    @Override
+    public ResponseEntity<BaseResponse> resetPasswordRequest(String username) {
+        if (username == null) {
+            return new BaseResponse(false, "Username is required.", "").prepareResponse(HttpStatus.BAD_REQUEST);
+        }
+
+        User user = userRepository.findByUsername(username);
+
+        if (user == null) {
+            return new BaseResponse(false, "No user is found with the given username.", "").prepareResponse(HttpStatus.BAD_REQUEST);
+        }
+
+        // Generate a token here
+        String token = "ABC";
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("ucanyiittest@gmail.com");
+        message.setTo(user.getEmail());
+        message.setSubject("Monopoly - Password Reset");
+        String passwordResetLink = "http://localhost:8080/api/reset-password?token=" + token + "&username=" + username + "&password=" + "new-password";
+        message.setText("You can reset your password using " + passwordResetLink + ".");
+        emailSender.send(message);
+
+        return new BaseResponse(true, "An password reset link is sent to your mail.", "").prepareResponse(HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<BaseResponse> resetPassword(String username, String password, String token) {
+        if (username == null || password == null || token == null) {
+            return new BaseResponse(false, "Username, password and token are required.", "").prepareResponse(HttpStatus.BAD_REQUEST);
+        }
+
+        User user = userRepository.findByUsername(username);
+
+        if (user == null) {
+            return new BaseResponse(false, "No user is found with the given username.", "").prepareResponse(HttpStatus.BAD_REQUEST);
+        }
+
+        // Check generated token here
+        Boolean check = true;
+
+        if (check) {
+            user.setPassword(password);
+            userRepository.save(user);
+            return new BaseResponse(true, "Password has been reset successfully.", "").prepareResponse(HttpStatus.OK);
+        }
+        else {
+            return new BaseResponse(false, "Invalid token.", "").prepareResponse(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @Override

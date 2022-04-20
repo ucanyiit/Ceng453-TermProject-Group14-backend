@@ -27,10 +27,8 @@ public class SwaggerConfigurer {
     public Docket swaggerConfig(){
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .paths(PathSelectors.regex("/.*"))
                 .apis(RequestHandlerSelectors.basePackage("ceng453.backend"))
-                //.apis(RequestHandlerSelectors.any())
-                //.paths(PathSelectors.)
+                .paths(PathSelectors.any())
                 .build()
                 .apiInfo(endPointDetails());
     }

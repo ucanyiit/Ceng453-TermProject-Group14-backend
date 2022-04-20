@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import ceng453.backend.models.BaseResponse;
 import org.springframework.http.HttpStatus;
-import sun.net.www.http.HttpClient;
 
 import java.io.BufferedReader;
 import java.io.InputStream;

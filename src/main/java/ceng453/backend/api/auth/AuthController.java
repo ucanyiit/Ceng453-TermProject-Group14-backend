@@ -76,9 +76,44 @@ public class AuthController {
             notes = "Remind the user password with the given username using password reminder",
             response = ResponseEntity.class
     )
-    @PostMapping("/remindPassword")
+    @PostMapping("/remind-password")
     public ResponseEntity<BaseResponse> remindPassword(String username) {
         return authService.remindPassword(username);
+    }
+
+    /**
+     * This method is used to reset user's password.
+     * @param username: The unique username of the user.
+     * @param password: The password of the user.
+     * @param token: The token of the user that's sent to their mail.
+     * @return true if successful, otherwise false.
+     */
+    @ApiOperation(
+            value = "Reset Password",
+            notes = "Resets the user password with the given username and password",
+            response = ResponseEntity.class
+    )
+    @GetMapping("/reset-password")
+    public ResponseEntity<BaseResponse> changePassword(
+            String username,
+            String password,
+            String token) {
+        return authService.resetPassword(username, password, token);
+    }
+
+    /**
+     * This method is used to request a password reset.
+     * @param username: The unique username of the user.
+     * @return A response entity with the "email is sent" message if successful.
+     */
+    @ApiOperation(
+            value = "Request Password Reset",
+            notes = "Request the user password reset with the given username",
+            response = ResponseEntity.class
+    )
+    @PostMapping("/request-password-reset")
+    public ResponseEntity<BaseResponse> getUserInfo(String username) {
+        return authService.resetPasswordRequest(username);
     }
 
 }
