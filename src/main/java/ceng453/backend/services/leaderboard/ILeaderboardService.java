@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 @Service
 public interface ILeaderboardService {
     /**
-     * Get the scores of the top 10 players between the startDate and endDate
+     * Get the scores of the top players between the startDate and endDate
      * @param startDate the start date of the leaderboard
      * @param endDate the end date of the leaderboard
      * @return the scores of the top 10 players in sorted manner
