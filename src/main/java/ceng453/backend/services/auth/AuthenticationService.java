@@ -13,6 +13,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -28,6 +29,9 @@ public class AuthenticationService implements IAuthenticationService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     HashMap<String, Pair<String, Date>> tokenMap = new HashMap<>();
 
     @Override
@@ -40,8 +44,7 @@ public class AuthenticationService implements IAuthenticationService {
         if (user == null) {
             return new BaseResponse(false, "Cannot find the username", "")
                     .prepareResponse(HttpStatus.UNAUTHORIZED);
-
-        } else if (!user.getPassword().equals(password)) {
+        } else if (!passwordEncoder.matches(password, user.getPassword())) {
             return new BaseResponse(false, "Wrong password", "")
                     .prepareResponse(HttpStatus.UNAUTHORIZED);
         } else {
@@ -55,7 +58,7 @@ public class AuthenticationService implements IAuthenticationService {
         List<GrantedAuthority> grantedAuthorities = AuthorityUtils
                 .commaSeparatedStringToAuthorityList("ROLE_USER");
 
-        String token = Jwts
+        return Jwts
                 .builder()
                 .setId("monopoly-token")
                 .setSubject(username)
@@ -67,8 +70,6 @@ public class AuthenticationService implements IAuthenticationService {
                 .setExpiration(new Date(System.currentTimeMillis() + 86_400_000)) // 1 day
                 .signWith(SignatureAlgorithm.HS512,
                         secretKey.getBytes()).compact();
-
-        return token;
     }
 
     @Override
@@ -81,7 +82,7 @@ public class AuthenticationService implements IAuthenticationService {
             User user = new User();
             user.setUsername(username);
             user.setEmail(email);
-            user.setPassword(password);
+            user.setPassword(passwordEncoder.encode(password));
             user.setPasswordReminder(passwordReminder);
             userRepository.save(user);
         } catch (Exception e) {
@@ -173,7 +174,7 @@ public class AuthenticationService implements IAuthenticationService {
             tokenMap.remove(username);
 
             if (check) {
-                user.setPassword(password);
+                user.setPassword(passwordEncoder.encode(password));
                 userRepository.save(user);
                 return new BaseResponse(true, "Password has been reset successfully.", "").prepareResponse(HttpStatus.OK);
             }
