@@ -77,19 +77,27 @@ public class AuthenticationService implements IAuthenticationService {
             return new BaseResponse(false, "Username, email, password and a password reminder are required.", "").prepareResponse(HttpStatus.BAD_REQUEST);
         }
 
-        User user = new User();
-        user.setUsername(username);
-        user.setEmail(email);
-        user.setPassword(password);
-        user.setPasswordReminder(passwordReminder);
-        userRepository.save(user);
+        try {
+            User user = new User();
+            user.setUsername(username);
+            user.setEmail(email);
+            user.setPassword(password);
+            user.setPasswordReminder(passwordReminder);
+            userRepository.save(user);
+        } catch (Exception e) {
+            return new BaseResponse(false, "Username or email already exists.", "").prepareResponse(HttpStatus.BAD_REQUEST);
+        }
 
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("ucanyiittest@gmail.com");
-        message.setTo(email);
-        message.setSubject("Monopoly - Hello!");
-        message.setText("Welcome to Project Monopoly, " + username + ". Thank you for registering.");
-        emailSender.send(message);
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom("ucanyiittest@gmail.com");
+            message.setTo(email);
+            message.setSubject("Monopoly - Hello!");
+            message.setText("Welcome to Project Monopoly, " + username + ". Thank you for registering.");
+            emailSender.send(message);
+        } catch (Exception e) {
+            return  new BaseResponse(false, "Cannot send email", "").prepareResponse(HttpStatus.BAD_REQUEST);
+        }
 
         return new BaseResponse(true, "You have registered successfully", "")
                 .prepareResponse(HttpStatus.OK);    }
@@ -129,16 +137,19 @@ public class AuthenticationService implements IAuthenticationService {
 
         // Generate a token here
         String token = createToken(user.getUsername());
-
         tokenMap.put(user.getUsername(), new Pair<>(token, new Date(System.currentTimeMillis() + 86_400_000)));
 
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("ucanyiittest@gmail.com");
-        message.setTo(user.getEmail());
-        message.setSubject("Monopoly - Password Reset");
-        String passwordResetLink = "http://localhost:8080/api/auth/reset-password?token=" + token + "&username=" + username + "&password=" + "new-password";
-        message.setText("You can reset your password using " + passwordResetLink + ".");
-        emailSender.send(message);
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom("ucanyiittest@gmail.com");
+            message.setTo(user.getEmail());
+            message.setSubject("Monopoly - Password Reset");
+            String passwordResetLink = "http://localhost:8080/api/auth/reset-password?token=" + token + "&username=" + username + "&password=" + "new-password";
+            message.setText("You can reset your password using " + passwordResetLink + ".");
+            emailSender.send(message);
+        } catch (Exception e) {
+            return new BaseResponse(false, "Error sending email.", "").prepareResponse(HttpStatus.BAD_REQUEST);
+        }
 
         return new BaseResponse(true, "A password reset link is sent to your mail.", "").prepareResponse(HttpStatus.OK);
     }
