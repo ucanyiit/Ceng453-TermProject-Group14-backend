@@ -15,6 +15,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    /**
+     * This method is used to configure the security of the application.
+     * @param http the http object that is used to configure the security.
+     * @throws Exception if an error occurs.
+     * @apiNote This method enables authorization for the endpoints. If an endpoint is wanted as public, then it should be
+     * allowed in the method with antMatchers specifying the pattern.
+     */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http

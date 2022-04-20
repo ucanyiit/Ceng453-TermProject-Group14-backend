@@ -28,6 +28,7 @@ public class AuthenticationService implements IAuthenticationService {
 
     @Autowired
     private final UserRepository userRepository;
+
     @Autowired
     private final JavaMailSender emailSender;
 
@@ -55,6 +56,11 @@ public class AuthenticationService implements IAuthenticationService {
         }
     }
 
+    /**
+     * Creates a token for the given username.
+     * @param username the username of the user
+     * @return the token with the expiration time of 1 day.
+     */
     private String createToken(String username) {
         String secretKey = "mySecretKey";
         List<GrantedAuthority> grantedAuthorities = AuthorityUtils
