@@ -1,20 +1,23 @@
 package ceng453.backend;
 
 import org.json.JSONObject;
+import java.util.stream.*;
+import java.util.*;
 
 public class UserConfigs {
 
     static public String makeQuery(JSONObject user) {
         String query = "";
+        Iterator<String> keys = user.keys();
         try {
-            query =
-                    "?username=" + user.getString("username") +
-                    "&password=" + user.getString("password") +
-                    "&email=" + user.getString("email") +
-                    "&passwordReminder=" + user.getString("passwordReminder");
+            do{
+                String key = keys.next().toString();
+                query += "&" + key + "='" + user.get(key);
+            } while (keys.hasNext());
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return query;
     }
 

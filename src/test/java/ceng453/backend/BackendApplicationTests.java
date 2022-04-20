@@ -81,10 +81,6 @@ class BackendApplicationTests {
             conn.setRequestMethod("POST");
             conn.setDoOutput(true);
 
-
-
-
-            // This line makes the request
             InputStream responseStream = conn.getInputStream();
 
             String content = getStringFromInputStream(responseStream);
@@ -94,6 +90,108 @@ class BackendApplicationTests {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-
     }
+
+    @Test
+    void apiLoginTest1() {
+        try {
+            JSONObject userJson = UserConfigs.user1();
+            JSONObject loginJson = new JSONObject();
+            loginJson.put("username", userJson.get("username"));
+            loginJson.put("password", userJson.get("password"));
+
+            URL url = new URL(baseUrl + "auth/login" + UserConfigs.makeQuery(loginJson));
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestProperty("accept", "application/json");
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestMethod("POST");
+            conn.setDoOutput(true);
+
+            InputStream responseStream = conn.getInputStream();
+
+            String content = getStringFromInputStream(responseStream);
+            JSONObject json = new JSONObject(content);
+            // Finally we have the response
+            assert json.get("status").equals(true);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    @Test
+    void apiRemindPasswordTest1() {
+        try {
+            JSONObject userJson = UserConfigs.user1();
+            JSONObject remindJson = new JSONObject();
+            remindJson.put("username", userJson.get("username"));
+
+            URL url = new URL(baseUrl + "auth/remind-password" + UserConfigs.makeQuery(remindJson));
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestProperty("accept", "application/json");
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestMethod("POST");
+            conn.setDoOutput(true);
+
+            InputStream responseStream = conn.getInputStream();
+
+            String content = getStringFromInputStream(responseStream);
+            JSONObject json = new JSONObject(content);
+            // Finally we have the response
+            assert json.get("status").equals(true);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    @Test
+    void apiRequestPasswordReset() {
+        try {
+            JSONObject userJson = UserConfigs.user1();
+            JSONObject remindJson = new JSONObject();
+            remindJson.put("username", userJson.get("username"));
+
+            URL url = new URL(baseUrl + "auth/request-password-reset" + UserConfigs.makeQuery(remindJson));
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestProperty("accept", "application/json");
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestMethod("POST");
+            conn.setDoOutput(true);
+
+            InputStream responseStream = conn.getInputStream();
+
+            String content = getStringFromInputStream(responseStream);
+            JSONObject json = new JSONObject(content);
+            // Finally we have the response
+            assert json.get("status").equals(true);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    @Test
+    void apiResetPassword() {
+        try {
+            JSONObject userJson = UserConfigs.user1();
+            JSONObject remindJson = new JSONObject();
+            remindJson.put("username", userJson.get("username"));
+            remindJson.put("password", userJson.get("password"));
+
+            URL url = new URL(baseUrl + "auth/reset-password" + UserConfigs.makeQuery(remindJson));
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestProperty("accept", "application/json");
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestMethod("GET");
+            conn.setDoOutput(true);
+
+            InputStream responseStream = conn.getInputStream();
+
+            String content = getStringFromInputStream(responseStream);
+            JSONObject json = new JSONObject(content);
+            // Finally we have the response
+            assert json.get("status").equals(true);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
 }
