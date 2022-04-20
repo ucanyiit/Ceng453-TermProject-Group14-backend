@@ -5,6 +5,7 @@ import ceng453.backend.models.User;
 import ceng453.backend.repositories.UserRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,13 +19,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @Service
 public class AuthenticationService implements IAuthenticationService {
 
     @Autowired
-    private JavaMailSender emailSender;
+    private final UserRepository userRepository;
     @Autowired
-    private UserRepository userRepository;
+    private final JavaMailSender emailSender;
 
 
     @Override
