@@ -33,7 +33,6 @@ public class Game {
     @OneToMany(mappedBy = "game", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Move> movesIn = new ArrayList<>();
 
-
     public Game() {
 
     }
@@ -101,5 +100,9 @@ public class Game {
 
     public void setPlayersIn(List<Player> playersIn) {
         this.playersIn = playersIn;
+    }
+
+    public List<Move> getMovesIn() {
+        return movesIn;
     }
 }

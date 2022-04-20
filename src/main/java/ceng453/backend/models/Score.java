@@ -3,7 +3,7 @@ package ceng453.backend.models;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.util.Date;
 
 @Table(name = "scores")
 @Entity
@@ -13,16 +13,21 @@ public class Score {
     private Integer id;
     private Integer score;
     @CreationTimestamp
-    private LocalDateTime timestamp;
+    private Date timestamp;
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "game_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "game_id")
     private Game game;
 
     public Score() {
 
+    }
+
+    public Score(User user, Integer score) {
+        this.user = user;
+        this.score = score;
     }
 
     public Score(User user, Game game, Integer score) {
@@ -59,7 +64,7 @@ public class Score {
         this.score = score;
     }
 
-    public LocalDateTime getTimestamp() {
+    public Date getTimestamp() {
         return timestamp;
     }
 }

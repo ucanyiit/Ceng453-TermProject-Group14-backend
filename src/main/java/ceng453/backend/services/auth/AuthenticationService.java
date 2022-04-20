@@ -81,8 +81,8 @@ public class AuthenticationService implements IAuthenticationService {
         message.setText("Welcome to Project Monopoly " + username + ", activate your account here: ");
         emailSender.send(message);
 
-        return null;
-    }
+        return new BaseResponse(true, "You have registered successfully", "")
+                .prepareResponse(HttpStatus.OK);    }
 
     @Override
     public ResponseEntity<BaseResponse> remindPassword(String username) {
