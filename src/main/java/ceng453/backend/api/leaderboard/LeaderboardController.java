@@ -29,7 +29,7 @@ public class LeaderboardController {
             notes = "Get the scores for a given time period",
             response = ResponseEntity.class
     )
-    @GetMapping("/getScores")
+    @GetMapping("/get-scores")
     public ResponseEntity<BaseResponse> getLeaderboard(String startDate, String endDate) {
         return leaderboardService.getLeaderboard(startDate, endDate);
     }
@@ -45,7 +45,7 @@ public class LeaderboardController {
             notes = "Add a score with the username and score",
             response = ResponseEntity.class
     )
-    @PostMapping("/addScore")
+    @PostMapping("/add-score")
     public ResponseEntity<BaseResponse> getLeaderboard(String username, Integer score) {
         return leaderboardService.addScore(username, score);
     }
