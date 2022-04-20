@@ -6,6 +6,7 @@ import ceng453.backend.repositories.UserRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
+import org.javatuples.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,6 +30,7 @@ public class AuthenticationService implements IAuthenticationService {
     @Autowired
     private final JavaMailSender emailSender;
 
+    HashMap<String, Pair<String, Date>> tokenMap = new HashMap<>();
 
     @Override
     public ResponseEntity<BaseResponse> login(String username, String password) {
@@ -56,7 +59,7 @@ public class AuthenticationService implements IAuthenticationService {
 
         String token = Jwts
                 .builder()
-                .setId("softtekJWT")
+                .setId("monopoly-token")
                 .setSubject(username)
                 .claim("authorities",
                         grantedAuthorities.stream()
@@ -67,7 +70,7 @@ public class AuthenticationService implements IAuthenticationService {
                 .signWith(SignatureAlgorithm.HS512,
                         secretKey.getBytes()).compact();
 
-        return "Bearer " + token;
+        return token;
     }
 
     @Override
@@ -76,19 +79,27 @@ public class AuthenticationService implements IAuthenticationService {
             return new BaseResponse(false, "Username, email, password and a password reminder are required.", "").prepareResponse(HttpStatus.BAD_REQUEST);
         }
 
-        User user = new User();
-        user.setUsername(username);
-        user.setEmail(email);
-        user.setPassword(password);
-        user.setPasswordReminder(passwordReminder);
-        userRepository.save(user);
+        try {
+            User user = new User();
+            user.setUsername(username);
+            user.setEmail(email);
+            user.setPassword(password);
+            user.setPasswordReminder(passwordReminder);
+            userRepository.save(user);
+        } catch (Exception e) {
+            return new BaseResponse(false, "Username or email already exists.", "").prepareResponse(HttpStatus.BAD_REQUEST);
+        }
 
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("ucanyiittest@gmail.com");
-        message.setTo(email);
-        message.setSubject("Monopoly - Hello!");
-        message.setText("Welcome to Project Monopoly, " + username + ". Thank you for registering.");
-        emailSender.send(message);
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom("ucanyiittest@gmail.com");
+            message.setTo(email);
+            message.setSubject("Monopoly - Hello!");
+            message.setText("Welcome to Project Monopoly, " + username + ". Thank you for registering.");
+            emailSender.send(message);
+        } catch (Exception e) {
+            return  new BaseResponse(false, "Cannot send email", "").prepareResponse(HttpStatus.BAD_REQUEST);
+        }
 
         return new BaseResponse(true, "You have registered successfully", "")
                 .prepareResponse(HttpStatus.OK);    }
@@ -127,17 +138,22 @@ public class AuthenticationService implements IAuthenticationService {
         }
 
         // Generate a token here
-        String token = "ABC";
+        String token = createToken(user.getUsername());
+        tokenMap.put(user.getUsername(), new Pair<>(token, new Date(System.currentTimeMillis() + 86_400_000)));
 
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("ucanyiittest@gmail.com");
-        message.setTo(user.getEmail());
-        message.setSubject("Monopoly - Password Reset");
-        String passwordResetLink = "http://localhost:8080/api/reset-password?token=" + token + "&username=" + username + "&password=" + "new-password";
-        message.setText("You can reset your password using " + passwordResetLink + ".");
-        emailSender.send(message);
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom("ucanyiittest@gmail.com");
+            message.setTo(user.getEmail());
+            message.setSubject("Monopoly - Password Reset");
+            String passwordResetLink = "http://localhost:8080/api/auth/reset-password?token=" + token + "&username=" + username + "&password=" + "new-password";
+            message.setText("You can reset your password using " + passwordResetLink + ".");
+            emailSender.send(message);
+        } catch (Exception e) {
+            return new BaseResponse(false, "Error sending email.", "").prepareResponse(HttpStatus.BAD_REQUEST);
+        }
 
-        return new BaseResponse(true, "An password reset link is sent to your mail.", "").prepareResponse(HttpStatus.OK);
+        return new BaseResponse(true, "A password reset link is sent to your mail.", "").prepareResponse(HttpStatus.OK);
     }
 
     @Override
@@ -153,14 +169,20 @@ public class AuthenticationService implements IAuthenticationService {
         }
 
         // Check generated token here
-        Boolean check = true;
+        try {
+            Pair<String, Date> tokenPair = tokenMap.get(username);
+            boolean check = token.equals(tokenPair.getValue(0)) && ((Date) tokenPair.getValue(1)).after(new Date(System.currentTimeMillis()));
+            tokenMap.remove(username);
 
-        if (check) {
-            user.setPassword(password);
-            userRepository.save(user);
-            return new BaseResponse(true, "Password has been reset successfully.", "").prepareResponse(HttpStatus.OK);
-        }
-        else {
+            if (check) {
+                user.setPassword(password);
+                userRepository.save(user);
+                return new BaseResponse(true, "Password has been reset successfully.", "").prepareResponse(HttpStatus.OK);
+            }
+            else {
+                return new BaseResponse(false, "Invalid token.", "").prepareResponse(HttpStatus.BAD_REQUEST);
+            }
+        } catch (Exception e) {
             return new BaseResponse(false, "Invalid token.", "").prepareResponse(HttpStatus.BAD_REQUEST);
         }
     }
