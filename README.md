@@ -7,3 +7,7 @@
 ### Swagger Documentations
 
 Swagger documentations are located [here](https://ceng453-term-project-group14.herokuapp.com/swagger-ui/).
+
+### Database Models
+
+[![Database Models](./docs/project_group14.svg)]()
