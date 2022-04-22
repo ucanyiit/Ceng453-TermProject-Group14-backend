@@ -3,6 +3,7 @@ package ceng453.backend;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import ceng453.backend.models.BaseResponse;
 import org.springframework.http.HttpStatus;
@@ -14,7 +15,10 @@ import ceng453.backend.UserConfigs;
 
 @SpringBootTest
 class BackendApplicationTests {
-    private String baseUrl = "http://localhost:8080/api/";
+
+
+    @Value("${server.address.development}")
+    private String baseUrl;
 
 
     @Test

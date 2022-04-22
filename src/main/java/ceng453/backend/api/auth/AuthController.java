@@ -2,11 +2,9 @@ package ceng453.backend.api.auth;
 
 import ceng453.backend.models.BaseResponse;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ceng453.backend.services.auth.*;
 import lombok.RequiredArgsConstructor;
 
@@ -30,7 +28,11 @@ public class AuthController {
             response = ResponseEntity.class
     )
     @PostMapping("/login")
-    public ResponseEntity<BaseResponse> login(String username, String password) {
+    public ResponseEntity<BaseResponse> login(
+            @ApiParam(value = "The unique username", example = "bahadirkisbet")
+            @RequestBody String username,
+            @ApiParam(value = "The password consisting of more than 8 characters", example = "kisbetbahadir")
+            @RequestBody String password) {
         return authService.login(username, password);
     }
 
@@ -40,7 +42,8 @@ public class AuthController {
      * @return true if successful, otherwise false.
      */
     @GetMapping("/logout")
-    public ResponseEntity<BaseResponse> logout(String token) {
+    public ResponseEntity<BaseResponse> logout(
+            @ApiParam(value = "The access token given to the user during login") @RequestBody String token) {
         return authService.logout(token);
     }
 
@@ -59,10 +62,14 @@ public class AuthController {
     )
     @PostMapping("/register")
     public ResponseEntity<BaseResponse> register(
-            String username,
-            String email,
-            String password,
-            String passwordReminder) {
+            @ApiParam(value = "The unique username", example = "yigitucan")
+            @RequestBody String username,
+            @ApiParam(value = "The unique email", example = "ucanyiit@gmail.com")
+            @RequestBody String email,
+            @ApiParam(value = "The password that contains more than 8 character", example = "ucanucan")
+            @RequestBody String password,
+            @ApiParam(value = "A reminder to user for her/his password in case of she/he forgot", example = "surname multiplied by two")
+            @RequestBody String passwordReminder) {
         return authService.register(username, email, password, passwordReminder);
     }
 
@@ -77,7 +84,9 @@ public class AuthController {
             response = ResponseEntity.class
     )
     @PostMapping("/remind-password")
-    public ResponseEntity<BaseResponse> remindPassword(String username) {
+    public ResponseEntity<BaseResponse> remindPassword(
+            @ApiParam(value = "The unique username", example = "bahadirkisbet")
+            @RequestBody String username) {
         return authService.remindPassword(username);
     }
 
@@ -95,9 +104,12 @@ public class AuthController {
     )
     @GetMapping("/reset-password")
     public ResponseEntity<BaseResponse> changePassword(
-            String username,
-            String password,
-            String token) {
+            @ApiParam(value = "The unique username", example = "yigitucan")
+            @RequestBody String username,
+            @ApiParam(value = "The new password that contains more than 8 character", example = "yiityiit")
+            @RequestBody String password,
+            @ApiParam(value = "The token sent to the user's email", example = "<some_long_and_random_string>")
+            @RequestBody String token) {
         return authService.resetPassword(username, password, token);
     }
 
@@ -112,7 +124,9 @@ public class AuthController {
             response = ResponseEntity.class
     )
     @PostMapping("/request-password-reset")
-    public ResponseEntity<BaseResponse> getUserInfo(String username) {
+    public ResponseEntity<BaseResponse> getUserInfo(
+            @ApiParam(value = "The unique username", example = "yigitucan")
+            @RequestBody String username) {
         return authService.resetPasswordRequest(username);
     }
 
