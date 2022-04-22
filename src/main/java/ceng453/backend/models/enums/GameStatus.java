@@ -1,4 +1,4 @@
-package ceng453.backend.models;
+package ceng453.backend.models.enums;
 
 public enum GameStatus {
     RUNNING,

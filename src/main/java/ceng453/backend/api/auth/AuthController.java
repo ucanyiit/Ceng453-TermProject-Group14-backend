@@ -1,9 +1,9 @@
 package ceng453.backend.api.auth;
 
-import ceng453.backend.models.ResponseModels.BaseResponse;
-import ceng453.backend.models.authDTOs.LoginDTO;
-import ceng453.backend.models.authDTOs.RegisterDTO;
-import ceng453.backend.models.authDTOs.UsernameDTO;
+import ceng453.backend.models.responses.BaseResponse;
+import ceng453.backend.models.DTOs.auth.LoginDTO;
+import ceng453.backend.models.DTOs.auth.RegisterDTO;
+import ceng453.backend.models.DTOs.auth.UsernameDTO;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.http.ResponseEntity;

@@ -1,8 +1,8 @@
-package ceng453.backend.models.ResponseModels.Leaderboard;
+package ceng453.backend.models.responses.Leaderboard;
 
 
-import ceng453.backend.models.ResponseModels.BaseResponse;
-import ceng453.backend.models.leaderboardDTOs.LeaderboardScoreDTO;
+import ceng453.backend.models.responses.BaseResponse;
+import ceng453.backend.models.DTOs.leaderboard.LeaderboardScoreDTO;
 import lombok.Getter;
 import lombok.Setter;
 

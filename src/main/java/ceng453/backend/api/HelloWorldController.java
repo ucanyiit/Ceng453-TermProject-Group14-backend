@@ -1,6 +1,6 @@
 package ceng453.backend.api;
 
-import ceng453.backend.models.ResponseModels.BaseResponse;
+import ceng453.backend.models.responses.BaseResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 

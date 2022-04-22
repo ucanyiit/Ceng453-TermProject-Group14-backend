@@ -1,7 +1,7 @@
 package ceng453.backend.services.auth;
 
-import ceng453.backend.models.ResponseModels.BaseResponse;
-import ceng453.backend.models.User;
+import ceng453.backend.models.responses.BaseResponse;
+import ceng453.backend.models.database.User;
 import ceng453.backend.repositories.UserRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

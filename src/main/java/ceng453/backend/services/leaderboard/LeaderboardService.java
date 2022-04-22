@@ -1,11 +1,10 @@
 package ceng453.backend.services.leaderboard;
 
-import ceng453.backend.models.ResponseModels.BaseResponse;
-import ceng453.backend.models.ResponseModels.Leaderboard.ScoresResponse;
-import ceng453.backend.models.Score;
-import ceng453.backend.models.User;
-import ceng453.backend.models.leaderboardDTOs.LeaderboardScoreDTO;
-import ceng453.backend.models.leaderboardDTOs.ScoreDTO;
+import ceng453.backend.models.responses.BaseResponse;
+import ceng453.backend.models.responses.Leaderboard.ScoresResponse;
+import ceng453.backend.models.database.Score;
+import ceng453.backend.models.database.User;
+import ceng453.backend.models.DTOs.leaderboard.LeaderboardScoreDTO;
 import ceng453.backend.repositories.ScoreRepository;
 import ceng453.backend.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

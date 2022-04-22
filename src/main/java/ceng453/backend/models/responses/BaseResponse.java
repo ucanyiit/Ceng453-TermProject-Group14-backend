@@ -1,4 +1,4 @@
-package ceng453.backend.models.ResponseModels;
+package ceng453.backend.models.responses;
 
 
 import lombok.Getter;

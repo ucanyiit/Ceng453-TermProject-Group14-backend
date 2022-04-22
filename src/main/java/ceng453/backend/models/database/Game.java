@@ -1,5 +1,6 @@
-package ceng453.backend.models;
+package ceng453.backend.models.database;
 
+import ceng453.backend.models.enums.GameType;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;

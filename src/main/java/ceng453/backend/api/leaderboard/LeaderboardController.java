@@ -1,9 +1,8 @@
 package ceng453.backend.api.leaderboard;
 
-import ceng453.backend.models.ResponseModels.BaseResponse;
-import ceng453.backend.models.ResponseModels.Leaderboard.ScoresResponse;
-import ceng453.backend.models.leaderboardDTOs.ScoreDTO;
-import ceng453.backend.models.leaderboardDTOs.LeaderboardDTO;
+import ceng453.backend.models.responses.BaseResponse;
+import ceng453.backend.models.DTOs.leaderboard.ScoreDTO;
+import ceng453.backend.models.DTOs.leaderboard.LeaderboardDTO;
 import ceng453.backend.services.leaderboard.ILeaderboardService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
