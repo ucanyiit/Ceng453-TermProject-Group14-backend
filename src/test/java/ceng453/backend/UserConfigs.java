@@ -93,5 +93,38 @@ public class UserConfigs {
         }
         return user5;
     }
-
+    static public JSONObject loginRequest(JSONObject user) {
+        try {
+            user.remove("email");
+            user.remove("passwordReminder");
+            return user;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    static public Map<String, String> registerRequest(JSONObject user) {
+        try {
+            Map<String, String> map = new HashMap<>();
+            map.put("username", user.getString("username"));
+            map.put("password", user.getString("password"));
+            map.put("email", user.getString("email"));
+            map.put("passwordReminder", user.getString("passwordReminder"));
+            return map;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    static public JSONObject passwordReminderRequest(JSONObject user) {
+        try {
+            user.remove("email");
+            user.remove("password");
+            user.remove("passwordReminder");
+            return user;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
