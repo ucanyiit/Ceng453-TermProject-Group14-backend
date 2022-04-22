@@ -13,7 +13,7 @@ import java.util.List;
 @Setter
 public class Property {
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @OneToMany(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<PropertyGame> properties = new ArrayList<>();

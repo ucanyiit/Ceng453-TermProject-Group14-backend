@@ -1,10 +1,10 @@
 package ceng453.backend.services.leaderboard;
 
-import ceng453.backend.models.responses.BaseResponse;
-import ceng453.backend.models.responses.Leaderboard.ScoresResponse;
+import ceng453.backend.models.DTOs.leaderboard.LeaderboardScoreDTO;
 import ceng453.backend.models.database.Score;
 import ceng453.backend.models.database.User;
-import ceng453.backend.models.DTOs.leaderboard.LeaderboardScoreDTO;
+import ceng453.backend.models.responses.BaseResponse;
+import ceng453.backend.models.responses.Leaderboard.ScoresResponse;
 import ceng453.backend.repositories.ScoreRepository;
 import ceng453.backend.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,8 +33,8 @@ public class LeaderboardService implements ILeaderboardService {
         }
 
         try {
-            Date formattedStartDate =new SimpleDateFormat("dd/MM/yyyy").parse(startDate);
-            Date formattedEndDate =new SimpleDateFormat("dd/MM/yyyy").parse(endDate);
+            Date formattedStartDate = new SimpleDateFormat("dd/MM/yyyy").parse(startDate);
+            Date formattedEndDate = new SimpleDateFormat("dd/MM/yyyy").parse(endDate);
 
             List<Score> scores = scoreRepository.findAllByTimestampBetween(formattedStartDate, formattedEndDate);
 

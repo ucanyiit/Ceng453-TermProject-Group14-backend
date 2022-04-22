@@ -17,6 +17,7 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     /**
      * This method is used to configure the security of the application.
+     *
      * @param http the http object that is used to configure the security.
      * @throws Exception if an error occurs.
      * @apiNote This method enables authorization for the endpoints. If an endpoint is wanted as public, then it should be
@@ -29,7 +30,7 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             "/swagger-ui/**",
             "/swagger-resources/**",
             "/v2/api-docs"};
-    
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http

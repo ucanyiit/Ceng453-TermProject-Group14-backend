@@ -12,7 +12,7 @@ import javax.persistence.*;
 @Setter
 public class Action {
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private ActionType type;
     private Integer amount;

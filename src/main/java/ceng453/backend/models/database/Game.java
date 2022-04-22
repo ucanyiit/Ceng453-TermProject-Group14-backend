@@ -17,7 +17,7 @@ import java.util.List;
 @Setter
 public class Game {
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @CreationTimestamp
     private LocalDateTime startDate;

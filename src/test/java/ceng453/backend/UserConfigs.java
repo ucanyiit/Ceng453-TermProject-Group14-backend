@@ -1,8 +1,10 @@
 package ceng453.backend;
 
 import org.json.JSONObject;
-import java.util.stream.*;
-import java.util.*;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 public class UserConfigs {
 
@@ -10,7 +12,7 @@ public class UserConfigs {
         String query = "";
         Iterator<String> keys = user.keys();
         try {
-            do{
+            do {
                 String key = keys.next().toString();
                 query += "&" + key + "='" + user.get(key);
             } while (keys.hasNext());
@@ -49,6 +51,7 @@ public class UserConfigs {
         return user2;
 
     }
+
     static public JSONObject user3() {
         JSONObject user3 = null;
         try {
@@ -93,6 +96,7 @@ public class UserConfigs {
         }
         return user5;
     }
+
     static public JSONObject loginRequest(JSONObject user) {
         try {
             user.remove("email");
@@ -103,6 +107,7 @@ public class UserConfigs {
         }
         return null;
     }
+
     static public Map<String, String> registerRequest(JSONObject user) {
         try {
             Map<String, String> map = new HashMap<>();
@@ -116,6 +121,7 @@ public class UserConfigs {
         }
         return null;
     }
+
     static public JSONObject passwordReminderRequest(JSONObject user) {
         try {
             user.remove("email");

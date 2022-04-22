@@ -1,8 +1,8 @@
 package ceng453.backend.api.leaderboard;
 
-import ceng453.backend.models.responses.BaseResponse;
-import ceng453.backend.models.DTOs.leaderboard.ScoreDTO;
 import ceng453.backend.models.DTOs.leaderboard.LeaderboardDTO;
+import ceng453.backend.models.DTOs.leaderboard.ScoreDTO;
+import ceng453.backend.models.responses.BaseResponse;
 import ceng453.backend.services.leaderboard.ILeaderboardService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +19,7 @@ public class LeaderboardController {
 
     /**
      * This method used to fetch the leaderboard for a given a time period.
+     *
      * @param leaderboardDTO: The leaderboardDTO object.
      * @return A sorted list of the scores for the given time period.
      */
@@ -34,6 +35,7 @@ public class LeaderboardController {
 
     /**
      * This method used to add a score for the user.
+     *
      * @param scoreDTO: The addScoreDTO object.
      * @return A response with the status of the request.
      */
