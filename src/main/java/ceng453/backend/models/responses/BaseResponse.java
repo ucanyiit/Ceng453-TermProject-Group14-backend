@@ -2,62 +2,29 @@ package ceng453.backend.models.responses;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.io.Serializable;
 
 @Getter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@Setter
 public class BaseResponse implements Serializable {
     @JsonProperty("status")
     public boolean status;
     @JsonProperty("message")
     public String message;
-    @JsonProperty("data")
-    public String response;
 
     /**
      * The base response model for all the responses. If there will be any extension to this class, the child class should
      * be cast to BaseResponse.
      * @param status true if the request is successful, false otherwise
      * @param message the error message if the request is unsuccessful. Otherwise it will be emptry string.
-     * @param response the response of the request as a string. This field can be converted into the required object.
      */
-//    public BaseResponse(boolean status, String message, String response) {
-//        this.status = status;
-//        this.message = message;
-//        this.response = response;
-//    }
-
-    public boolean getStatus() {
-        return this.status;
-    }
-
-    public void setStatus(boolean status) {
+    public BaseResponse(boolean status, String message) {
         this.status = status;
-    }
-
-    public String getMessage() {
-        return this.message;
-    }
-
-    public void setMessage(String message) {
         this.message = message;
-    }
-
-    public String getResponse() {
-        return this.response;
-    }
-
-    public void setResponse(String response) {
-        this.response = response;
     }
 
     /**

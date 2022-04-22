@@ -60,7 +60,6 @@ class BackendApplicationTests {
                     baseUrl + "auth/register", UserConfigs.registerRequest(userJson));
             System.out.println(response.getStatusCode());
             assert response.getStatusCode() == HttpStatus.OK: "Response is not OK";
-            System.out.println(response.getBody().getResponse());
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
