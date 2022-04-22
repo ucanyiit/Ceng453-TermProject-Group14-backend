@@ -1,4 +1,4 @@
-package ceng453.backend.models;
+package ceng453.backend.models.responses;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;

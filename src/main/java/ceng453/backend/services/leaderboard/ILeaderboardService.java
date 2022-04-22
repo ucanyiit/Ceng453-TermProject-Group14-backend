@@ -1,6 +1,6 @@
 package ceng453.backend.services.leaderboard;
 
-import ceng453.backend.models.BaseResponse;
+import ceng453.backend.models.responses.BaseResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 

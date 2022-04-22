@@ -1,6 +1,6 @@
 package ceng453.backend.api;
 
-import ceng453.backend.models.*;
+import ceng453.backend.models.responses.BaseResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,6 +9,6 @@ import org.springframework.web.bind.annotation.*;
 public class HelloWorldController {
     @GetMapping(produces = "application/json")
     public Object helloWorld() {
-        return new BaseResponse(true, "ping", "").prepareResponse(HttpStatus.OK);
+        return new BaseResponse(true, "ping").prepareResponse(HttpStatus.OK);
     }
 }

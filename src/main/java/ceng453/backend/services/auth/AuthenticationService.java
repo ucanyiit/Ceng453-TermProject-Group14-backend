@@ -1,7 +1,7 @@
 package ceng453.backend.services.auth;
 
-import ceng453.backend.models.BaseResponse;
-import ceng453.backend.models.User;
+import ceng453.backend.models.responses.BaseResponse;
+import ceng453.backend.models.database.User;
 import ceng453.backend.repositories.UserRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -44,18 +44,18 @@ public class AuthenticationService implements IAuthenticationService {
     @Override
     public ResponseEntity<BaseResponse> login(String username, String password) {
         if (username == null || password == null) {
-            return new BaseResponse(false, "Username and password are required.", "").prepareResponse(HttpStatus.BAD_REQUEST);
+            return new BaseResponse(false, "Username and password are required.").prepareResponse(HttpStatus.BAD_REQUEST);
         }
 
         User user = userRepository.findByUsername(username);
         if (user == null) {
-            return new BaseResponse(false, "Cannot find the username", "")
+            return new BaseResponse(false, "Cannot find the username")
                     .prepareResponse(HttpStatus.UNAUTHORIZED);
         } else if (!passwordEncoder.matches(password, user.getPassword())) {
-            return new BaseResponse(false, "Wrong password", "")
+            return new BaseResponse(false, "Wrong password")
                     .prepareResponse(HttpStatus.UNAUTHORIZED);
         } else {
-            return new BaseResponse(true, "", createToken(username))
+            return new BaseResponse(true, createToken(username))
                     .prepareResponse(HttpStatus.OK);
         }
     }
@@ -87,7 +87,7 @@ public class AuthenticationService implements IAuthenticationService {
     @Override
     public ResponseEntity<BaseResponse> register(String username, String email, String password, String passwordReminder) {
         if (username == null || email == null || password == null || passwordReminder == null) {
-            return new BaseResponse(false, "Username, email, password and a password reminder are required.", "").prepareResponse(HttpStatus.BAD_REQUEST);
+            return new BaseResponse(false, "Username, email, password and a password reminder are required.").prepareResponse(HttpStatus.BAD_REQUEST);
         }
 
         try {
@@ -98,7 +98,7 @@ public class AuthenticationService implements IAuthenticationService {
             user.setPasswordReminder(passwordReminder);
             userRepository.save(user);
         } catch (Exception e) {
-            return new BaseResponse(false, "Username or email already exists.", "").prepareResponse(HttpStatus.BAD_REQUEST);
+            return new BaseResponse(false, "Username or email already exists.").prepareResponse(HttpStatus.BAD_REQUEST);
         }
 
         try {
@@ -109,43 +109,43 @@ public class AuthenticationService implements IAuthenticationService {
             message.setText("Welcome to Project Monopoly, " + username + ". Thank you for registering.");
             emailSender.send(message);
         } catch (Exception e) {
-            return  new BaseResponse(false, "Cannot send email", "").prepareResponse(HttpStatus.BAD_REQUEST);
+            return  new BaseResponse(false, "Cannot send email").prepareResponse(HttpStatus.BAD_REQUEST);
         }
 
-        return new BaseResponse(true, "You have registered successfully", "")
+        return new BaseResponse(true, "You have registered successfully")
                 .prepareResponse(HttpStatus.OK);    }
 
     @Override
     public ResponseEntity<BaseResponse> remindPassword(String username) {
         if (username == null) {
-            return new BaseResponse(false, "Username is required.", "").prepareResponse(HttpStatus.BAD_REQUEST);
+            return new BaseResponse(false, "Username is required.").prepareResponse(HttpStatus.BAD_REQUEST);
         }
 
         User user = userRepository.findByUsername(username);
 
         if (user == null) {
-            return new BaseResponse(false, "No user is found with the given username.", "").prepareResponse(HttpStatus.BAD_REQUEST);
+            return new BaseResponse(false, "No user is found with the given username.").prepareResponse(HttpStatus.BAD_REQUEST);
         }
 
         String passwordReminder = user.getPasswordReminder();
         if (passwordReminder == null) {
-            return new BaseResponse(false, "No password reminder found for this user.", "").prepareResponse(HttpStatus.BAD_REQUEST);
+            return new BaseResponse(false, "No password reminder found for this user.").prepareResponse(HttpStatus.BAD_REQUEST);
         }
 
-        return new BaseResponse(true, passwordReminder, "").prepareResponse(HttpStatus.OK);
+        return new BaseResponse(true, passwordReminder).prepareResponse(HttpStatus.OK);
 
     }
 
     @Override
     public ResponseEntity<BaseResponse> resetPasswordRequest(String username) {
         if (username == null) {
-            return new BaseResponse(false, "Username is required.", "").prepareResponse(HttpStatus.BAD_REQUEST);
+            return new BaseResponse(false, "Username is required.").prepareResponse(HttpStatus.BAD_REQUEST);
         }
 
         User user = userRepository.findByUsername(username);
 
         if (user == null) {
-            return new BaseResponse(false, "No user is found with the given username.", "").prepareResponse(HttpStatus.BAD_REQUEST);
+            return new BaseResponse(false, "No user is found with the given username.").prepareResponse(HttpStatus.BAD_REQUEST);
         }
 
         // Generate a token here
@@ -161,22 +161,22 @@ public class AuthenticationService implements IAuthenticationService {
             message.setText("You can reset your password using " + passwordResetLink + ".");
             emailSender.send(message);
         } catch (Exception e) {
-            return new BaseResponse(false, "Error sending email.", "").prepareResponse(HttpStatus.BAD_REQUEST);
+            return new BaseResponse(false, "Error sending email.").prepareResponse(HttpStatus.BAD_REQUEST);
         }
 
-        return new BaseResponse(true, "A password reset link is sent to your mail.", "").prepareResponse(HttpStatus.OK);
+        return new BaseResponse(true, "A password reset link is sent to your mail.").prepareResponse(HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<BaseResponse> resetPassword(String username, String password, String token) {
         if (username == null || password == null || token == null) {
-            return new BaseResponse(false, "Username, password and token are required.", "").prepareResponse(HttpStatus.BAD_REQUEST);
+            return new BaseResponse(false, "Username, password and token are required.").prepareResponse(HttpStatus.BAD_REQUEST);
         }
 
         User user = userRepository.findByUsername(username);
 
         if (user == null) {
-            return new BaseResponse(false, "No user is found with the given username.", "").prepareResponse(HttpStatus.BAD_REQUEST);
+            return new BaseResponse(false, "No user is found with the given username.").prepareResponse(HttpStatus.BAD_REQUEST);
         }
 
         // Check generated token here
@@ -188,13 +188,13 @@ public class AuthenticationService implements IAuthenticationService {
             if (check) {
                 user.setPassword(passwordEncoder.encode(password));
                 userRepository.save(user);
-                return new BaseResponse(true, "Password has been reset successfully.", "").prepareResponse(HttpStatus.OK);
+                return new BaseResponse(true, "Password has been reset successfully.").prepareResponse(HttpStatus.OK);
             }
             else {
-                return new BaseResponse(false, "Invalid token.", "").prepareResponse(HttpStatus.BAD_REQUEST);
+                return new BaseResponse(false, "Invalid token.").prepareResponse(HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {
-            return new BaseResponse(false, "Invalid token.", "").prepareResponse(HttpStatus.BAD_REQUEST);
+            return new BaseResponse(false, "Invalid token.").prepareResponse(HttpStatus.BAD_REQUEST);
         }
     }
 

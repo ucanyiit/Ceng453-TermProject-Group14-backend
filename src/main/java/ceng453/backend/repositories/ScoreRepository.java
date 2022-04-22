@@ -1,6 +1,6 @@
 package ceng453.backend.repositories;
 
-import ceng453.backend.models.Score;
+import ceng453.backend.models.database.Score;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.Date;

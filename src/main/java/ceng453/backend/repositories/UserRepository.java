@@ -1,6 +1,6 @@
 package ceng453.backend.repositories;
 
-import ceng453.backend.models.User;
+import ceng453.backend.models.database.User;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Service;
 
