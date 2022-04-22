@@ -1,7 +1,9 @@
 package ceng453.backend.api.auth;
 
 import ceng453.backend.models.BaseResponse;
+import ceng453.backend.models.authDTOs.LoginDTO;
 import ceng453.backend.models.authDTOs.RegisterDTO;
+import ceng453.backend.models.authDTOs.UsernameDTO;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +21,7 @@ public class AuthController {
 
     /**
      * This method is used to login a user.
-     * @param username: The unique username of the user.
-     * @param password: The password of the user.
+     * @param loginDTO: The loginDTO of the user.
      * @return A response entity with the token of the user if successful.
      */
     @ApiOperation(
@@ -29,12 +30,8 @@ public class AuthController {
             response = ResponseEntity.class
     )
     @PostMapping("/login")
-    public ResponseEntity<BaseResponse> login(
-            @ApiParam(value = "The unique username", example = "bahadirkisbet")
-            @RequestBody String username,
-            @ApiParam(value = "The password consisting of more than 8 characters", example = "kisbetbahadir")
-            @RequestBody String password) {
-        return authService.login(username, password);
+    public ResponseEntity<BaseResponse> login(@RequestBody LoginDTO loginDTO) {
+        return authService.login(loginDTO.username, loginDTO.password);
     }
 
     /**
@@ -44,7 +41,8 @@ public class AuthController {
      */
     @GetMapping("/logout")
     public ResponseEntity<BaseResponse> logout(
-            @ApiParam(value = "The access token given to the user during login") @RequestBody String token) {
+            @ApiParam(value = "The access token given to the user during login")
+            @RequestParam String token) {
         return authService.logout(token);
     }
 
@@ -66,7 +64,7 @@ public class AuthController {
 
     /**
      * This method is used to login a user.
-     * @param username: The unique username of the user.
+     * @param username: The usernameDTO of the user.
      * @return A response entity with the token of the user if successful.
      */
     @ApiOperation(
@@ -75,10 +73,8 @@ public class AuthController {
             response = ResponseEntity.class
     )
     @PostMapping("/remind-password")
-    public ResponseEntity<BaseResponse> remindPassword(
-            @ApiParam(value = "The unique username", example = "bahadirkisbet")
-            @RequestBody String username) {
-        return authService.remindPassword(username);
+    public ResponseEntity<BaseResponse> remindPassword(@RequestBody UsernameDTO username) {
+        return authService.remindPassword(username.username);
     }
 
     /**
@@ -106,7 +102,7 @@ public class AuthController {
 
     /**
      * This method is used to request a password reset.
-     * @param username: The unique username of the user.
+     * @param username: The usernameDTO of the user.
      * @return A response entity with the "email is sent" message if successful.
      */
     @ApiOperation(
@@ -115,10 +111,8 @@ public class AuthController {
             response = ResponseEntity.class
     )
     @PostMapping("/request-password-reset")
-    public ResponseEntity<BaseResponse> getUserInfo(
-            @ApiParam(value = "The unique username", example = "yigitucan")
-            @RequestBody String username) {
-        return authService.resetPasswordRequest(username);
+    public ResponseEntity<BaseResponse> getUserInfo(@RequestBody UsernameDTO username) {
+        return authService.resetPasswordRequest(username.username);
     }
 
 }
