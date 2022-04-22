@@ -35,16 +35,11 @@ class BackendApplicationTests {
 
     @Test
     void apiTestPing() {
-        try {
-            restService = new RestService(new RestTemplateBuilder());
-            ResponseEntity<BaseResponse> response = restService.getBaseResponse(baseUrl);
-            System.out.println(response.getStatusCode());
-            assert response.getStatusCode() == HttpStatus.OK: "Response is not OK";
-            System.out.println(response.getBody().getMessage());
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-
+        restService = new RestService(new RestTemplateBuilder());
+        ResponseEntity<BaseResponse> response = restService.getBaseResponse(baseUrl);
+        System.out.println(response.getStatusCode());
+        assert response.getStatusCode() == HttpStatus.OK: "Response is not OK";
+        System.out.println(response.getBody().getMessage());
     }
 
     /**
@@ -53,16 +48,12 @@ class BackendApplicationTests {
      */
     @Test
     void apiTestRegister() {
-        try {
-            JSONObject userJson = UserConfigs.user5();
-            restService = new RestService(new RestTemplateBuilder());
-            ResponseEntity<BaseResponse> response = restService.postRequest(
-                    baseUrl + "auth/register", UserConfigs.registerRequest(userJson));
-            System.out.println(response.getStatusCode());
-            assert response.getStatusCode() == HttpStatus.OK: "Response is not OK";
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+        JSONObject userJson = UserConfigs.user5();
+        restService = new RestService(new RestTemplateBuilder());
+        ResponseEntity<BaseResponse> response = restService.postRequest(
+                baseUrl + "auth/register", UserConfigs.registerRequest(userJson));
+        System.out.println(response.getStatusCode());
+        assert response.getStatusCode() == HttpStatus.OK: "Response is not OK";
     }
 
     /**
@@ -71,16 +62,12 @@ class BackendApplicationTests {
      */
     @Test
     void apiLoginTest() {
-        try {
-            JSONObject userJson = UserConfigs.user5();
-            restService = new RestService(new RestTemplateBuilder());
-            ResponseEntity<BaseResponse> response = restService.postRequest(
-                    baseUrl + "auth/login", UserConfigs.loginRequest(userJson));
-            System.out.println(response.getStatusCode());
-            assert response.getStatusCode() == HttpStatus.OK: "Response is not OK";
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+        JSONObject userJson = UserConfigs.user5();
+        restService = new RestService(new RestTemplateBuilder());
+        ResponseEntity<BaseResponse> response = restService.postRequest(
+                baseUrl + "auth/login", UserConfigs.loginRequest(userJson));
+        System.out.println(response.getStatusCode());
+        assert response.getStatusCode() == HttpStatus.OK: "Response is not OK";
     }
 
     /**
@@ -90,16 +77,12 @@ class BackendApplicationTests {
      */
     @Test
     void apiRemindPasswordTest() {
-        try {
-            JSONObject userJson = UserConfigs.user5();
-            restService = new RestService(new RestTemplateBuilder());
-            ResponseEntity<BaseResponse> response = restService.postRequest(
-                    baseUrl + "auth/remind-password", UserConfigs.passwordReminderRequest(userJson));
-            System.out.println(response.getStatusCode());
-            assert response.getStatusCode() == HttpStatus.OK: "Response is not OK";
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+        JSONObject userJson = UserConfigs.user5();
+        restService = new RestService(new RestTemplateBuilder());
+        ResponseEntity<BaseResponse> response = restService.postRequest(
+                baseUrl + "auth/remind-password", UserConfigs.passwordReminderRequest(userJson));
+        System.out.println(response.getStatusCode());
+        assert response.getStatusCode() == HttpStatus.OK: "Response is not OK";
     }
 
     /**
@@ -108,17 +91,12 @@ class BackendApplicationTests {
      */
     @Test
     void apiRequestPasswordReset() {
-        try {
-            JSONObject userJson = UserConfigs.user5();
-            restService = new RestService(new RestTemplateBuilder());
-            ResponseEntity<BaseResponse> response = restService.postRequest(
-                    baseUrl + "auth/request-password-reset", UserConfigs.passwordReminderRequest(userJson));
-            System.out.println(response.getStatusCode());
-            assert response.getStatusCode() == HttpStatus.OK: "Response is not OK";
-
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+        JSONObject userJson = UserConfigs.user5();
+        restService = new RestService(new RestTemplateBuilder());
+        ResponseEntity<BaseResponse> response = restService.postRequest(
+                baseUrl + "auth/request-password-reset", UserConfigs.passwordReminderRequest(userJson));
+        System.out.println(response.getStatusCode());
+        assert response.getStatusCode() == HttpStatus.OK: "Response is not OK";
     }
 
 }
