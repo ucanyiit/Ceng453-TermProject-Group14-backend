@@ -1,6 +1,6 @@
 package ceng453.backend.services.auth;
 
-import ceng453.backend.models.BaseResponse;
+import ceng453.backend.models.ResponseModels.BaseResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 

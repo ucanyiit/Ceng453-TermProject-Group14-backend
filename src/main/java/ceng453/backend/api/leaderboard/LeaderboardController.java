@@ -1,8 +1,9 @@
 package ceng453.backend.api.leaderboard;
 
-import ceng453.backend.models.BaseResponse;
-import ceng453.backend.models.leaderboardDTOs.authDTOs.AddScoreDTO;
-import ceng453.backend.models.leaderboardDTOs.authDTOs.LeaderboardDTO;
+import ceng453.backend.models.ResponseModels.BaseResponse;
+import ceng453.backend.models.ResponseModels.Leaderboard.ScoresResponse;
+import ceng453.backend.models.leaderboardDTOs.ScoreDTO;
+import ceng453.backend.models.leaderboardDTOs.LeaderboardDTO;
 import ceng453.backend.services.leaderboard.ILeaderboardService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +35,7 @@ public class LeaderboardController {
 
     /**
      * This method used to add a score for the user.
-     * @param addScoreDTO: The addScoreDTO object.
+     * @param scoreDTO: The addScoreDTO object.
      * @return A response with the status of the request.
      */
     @ApiOperation(
@@ -43,7 +44,7 @@ public class LeaderboardController {
             response = ResponseEntity.class
     )
     @PostMapping("")
-    public ResponseEntity<BaseResponse> addScore(@RequestBody AddScoreDTO addScoreDTO) {
-        return leaderboardService.addScore(addScoreDTO.getUsername(), addScoreDTO.getScore());
+    public ResponseEntity<BaseResponse> addScore(@RequestBody ScoreDTO scoreDTO) {
+        return leaderboardService.addScore(scoreDTO.getUsername(), scoreDTO.getScore());
     }
 }

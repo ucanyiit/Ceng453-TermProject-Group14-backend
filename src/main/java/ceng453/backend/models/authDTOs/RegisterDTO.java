@@ -13,4 +13,8 @@ public class RegisterDTO extends LoginDTO {
 
     @ApiModelProperty(value = "A reminder to user for her/his password in case of she/he forgot", example = "surname multiplied by two")
     private String passwordReminder;
+
+    public RegisterDTO(String username) {
+        super(username);
+    }
 }

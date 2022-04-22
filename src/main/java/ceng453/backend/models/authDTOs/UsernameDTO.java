@@ -7,4 +7,8 @@ import lombok.Getter;
 public class UsernameDTO {
     @ApiModelProperty(value = "The unique username", example = "yigitucan")
     private String username;
+
+    public UsernameDTO(String username) {
+        this.username = username;
+    }
 }

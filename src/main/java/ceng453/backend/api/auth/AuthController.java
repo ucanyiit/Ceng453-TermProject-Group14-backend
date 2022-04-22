@@ -1,6 +1,6 @@
 package ceng453.backend.api.auth;
 
-import ceng453.backend.models.BaseResponse;
+import ceng453.backend.models.ResponseModels.BaseResponse;
 import ceng453.backend.models.authDTOs.LoginDTO;
 import ceng453.backend.models.authDTOs.RegisterDTO;
 import ceng453.backend.models.authDTOs.UsernameDTO;

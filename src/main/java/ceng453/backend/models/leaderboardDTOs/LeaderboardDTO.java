@@ -1,4 +1,4 @@
-package ceng453.backend.models.leaderboardDTOs.authDTOs;
+package ceng453.backend.models.leaderboardDTOs;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
