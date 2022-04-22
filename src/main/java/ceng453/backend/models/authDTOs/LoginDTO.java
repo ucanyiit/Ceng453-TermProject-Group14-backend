@@ -1,11 +1,13 @@
 package ceng453.backend.models.authDTOs;
 
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
 
-public class LoginDTO {
+@Getter
+public class LoginDTO extends UsernameDTO{
     @ApiModelProperty(value = "The unique username", example = "yigitucan")
-    public String username;
+    private String username;
 
     @ApiModelProperty(value = "The unique email", example = "ucanyiit@gmail.com")
-    public String password;
+    private String password;
 }

@@ -1,17 +1,16 @@
 package ceng453.backend.models.authDTOs;
 
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
 
-public class RegisterDTO {
-    @ApiModelProperty(value = "The unique username", example = "yigitucan")
-    public String username;
-
+@Getter
+public class RegisterDTO extends LoginDTO {
     @ApiModelProperty(value = "The unique email", example = "ucanyiit@gmail.com")
-    public String password;
+    private String password;
 
     @ApiModelProperty(value = "The password that contains more than 8 character", example = "ucanucan")
-    public String email;
+    private String email;
 
     @ApiModelProperty(value = "A reminder to user for her/his password in case of she/he forgot", example = "surname multiplied by two")
-    public String passwordReminder;
+    private String passwordReminder;
 }

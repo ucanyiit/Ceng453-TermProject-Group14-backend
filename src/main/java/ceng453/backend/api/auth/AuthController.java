@@ -31,7 +31,7 @@ public class AuthController {
     )
     @PostMapping("/login")
     public ResponseEntity<BaseResponse> login(@RequestBody LoginDTO loginDTO) {
-        return authService.login(loginDTO.username, loginDTO.password);
+        return authService.login(loginDTO.getUsername(), loginDTO.getPassword());
     }
 
     /**
@@ -59,7 +59,7 @@ public class AuthController {
     @PostMapping("/register")
     @ApiParam(value = "The registerDTO of the user", required = true)
     public ResponseEntity<BaseResponse> register(@RequestBody RegisterDTO registerDTO) {
-        return authService.register(registerDTO.username, registerDTO.email, registerDTO.password, registerDTO.passwordReminder);
+        return authService.register(registerDTO.getUsername(), registerDTO.getEmail(), registerDTO.getPassword(), registerDTO.getPasswordReminder());
     }
 
     /**
@@ -74,7 +74,7 @@ public class AuthController {
     )
     @PostMapping("/remind-password")
     public ResponseEntity<BaseResponse> remindPassword(@RequestBody UsernameDTO username) {
-        return authService.remindPassword(username.username);
+        return authService.remindPassword(username.getUsername());
     }
 
     /**
@@ -112,7 +112,7 @@ public class AuthController {
     )
     @PostMapping("/request-password-reset")
     public ResponseEntity<BaseResponse> getUserInfo(@RequestBody UsernameDTO username) {
-        return authService.resetPasswordRequest(username.username);
+        return authService.resetPasswordRequest(username.getUsername());
     }
 
 }

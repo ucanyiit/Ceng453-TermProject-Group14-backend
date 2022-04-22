@@ -1,8 +1,10 @@
 package ceng453.backend.models.authDTOs;
 
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
 
+@Getter
 public class UsernameDTO {
     @ApiModelProperty(value = "The unique username", example = "yigitucan")
-    public String username;
+    private String username;
 }
