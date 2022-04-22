@@ -21,10 +21,11 @@ public class SwaggerConfigurer {
 
     /**
      * This method defines the Docket bean, and controls the endpoints.
+     *
      * @return instance of Docket
      */
     @Bean
-    public Docket swaggerConfig(){
+    public Docket swaggerConfig() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("ceng453.backend"))
@@ -35,6 +36,7 @@ public class SwaggerConfigurer {
 
     /**
      * This method is used for changing default values. It provides custom information
+     *
      * @return ApiInfo instance
      */
 

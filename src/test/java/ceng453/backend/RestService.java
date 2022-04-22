@@ -1,7 +1,6 @@
 package ceng453.backend;
 
 import ceng453.backend.models.responses.BaseResponse;
-import org.json.JSONObject;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;

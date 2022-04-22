@@ -1,15 +1,15 @@
 package ceng453.backend.api.auth;
 
-import ceng453.backend.models.responses.BaseResponse;
 import ceng453.backend.models.DTOs.auth.LoginDTO;
 import ceng453.backend.models.DTOs.auth.RegisterDTO;
 import ceng453.backend.models.DTOs.auth.UsernameDTO;
+import ceng453.backend.models.responses.BaseResponse;
+import ceng453.backend.services.auth.AuthenticationService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ceng453.backend.services.auth.*;
-import lombok.RequiredArgsConstructor;
 
 @RequestMapping("api/auth")
 @RequiredArgsConstructor
@@ -21,6 +21,7 @@ public class AuthController {
 
     /**
      * This method is used to login a user.
+     *
      * @param loginDTO: The loginDTO of the user.
      * @return A response entity with the token of the user if successful.
      */
@@ -36,6 +37,7 @@ public class AuthController {
 
     /**
      * This method is used to logout a user.
+     *
      * @param token: The token of the user.
      * @return true if successful, otherwise false.
      */
@@ -48,6 +50,7 @@ public class AuthController {
 
     /**
      * This method is used to register a user.
+     *
      * @param registerDTO: The registerDTO of the user.
      * @return true if successful, otherwise false.
      */
@@ -64,6 +67,7 @@ public class AuthController {
 
     /**
      * This method is used to login a user.
+     *
      * @param username: The usernameDTO of the user.
      * @return A response entity with the token of the user if successful.
      */
@@ -79,9 +83,10 @@ public class AuthController {
 
     /**
      * This method is used to reset user's password.
+     *
      * @param username: The unique username of the user.
      * @param password: The password of the user.
-     * @param token: The token of the user that's sent to their mail.
+     * @param token:    The token of the user that's sent to their mail.
      * @return true if successful, otherwise false.
      */
     @ApiOperation(
@@ -102,6 +107,7 @@ public class AuthController {
 
     /**
      * This method is used to request a password reset.
+     *
      * @param username: The usernameDTO of the user.
      * @return A response entity with the "email is sent" message if successful.
      */

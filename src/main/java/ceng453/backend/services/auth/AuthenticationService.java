@@ -1,12 +1,12 @@
 package ceng453.backend.services.auth;
 
-import ceng453.backend.models.responses.BaseResponse;
 import ceng453.backend.models.database.User;
+import ceng453.backend.models.responses.BaseResponse;
 import ceng453.backend.repositories.UserRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.javatuples.Pair;
 import lombok.RequiredArgsConstructor;
+import org.javatuples.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -32,14 +32,11 @@ public class AuthenticationService implements IAuthenticationService {
 
     @Autowired
     private final JavaMailSender emailSender;
-
+    HashMap<String, Pair<String, Date>> tokenMap = new HashMap<>();
     @Autowired
     private PasswordEncoder passwordEncoder;
-
     @Value("${server.servlet.session.cookie.max-age}")
     private long cookieDuration;
-
-    HashMap<String, Pair<String, Date>> tokenMap = new HashMap<>();
 
     @Override
     public ResponseEntity<BaseResponse> login(String username, String password) {
@@ -62,6 +59,7 @@ public class AuthenticationService implements IAuthenticationService {
 
     /**
      * Creates a token for the given username.
+     *
      * @param username the username of the user
      * @return the token with the expiration time of 1 day.
      */
@@ -109,11 +107,12 @@ public class AuthenticationService implements IAuthenticationService {
             message.setText("Welcome to Project Monopoly, " + username + ". Thank you for registering.");
             emailSender.send(message);
         } catch (Exception e) {
-            return  new BaseResponse(false, "Cannot send email").prepareResponse(HttpStatus.BAD_REQUEST);
+            return new BaseResponse(false, "Cannot send email").prepareResponse(HttpStatus.BAD_REQUEST);
         }
 
         return new BaseResponse(true, "You have registered successfully")
-                .prepareResponse(HttpStatus.OK);    }
+                .prepareResponse(HttpStatus.OK);
+    }
 
     @Override
     public ResponseEntity<BaseResponse> remindPassword(String username) {
@@ -189,8 +188,7 @@ public class AuthenticationService implements IAuthenticationService {
                 user.setPassword(passwordEncoder.encode(password));
                 userRepository.save(user);
                 return new BaseResponse(true, "Password has been reset successfully.").prepareResponse(HttpStatus.OK);
-            }
-            else {
+            } else {
                 return new BaseResponse(false, "Invalid token.").prepareResponse(HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {

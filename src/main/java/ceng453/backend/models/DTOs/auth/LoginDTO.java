@@ -4,7 +4,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 
 @Getter
-public class LoginDTO extends UsernameDTO{
+public class LoginDTO extends UsernameDTO {
     @ApiModelProperty(value = "The unique username", example = "yigitucan")
     private String username;
 
