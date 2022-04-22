@@ -1,14 +1,13 @@
 package ceng453.backend.api.leaderboard;
 
 import ceng453.backend.models.BaseResponse;
+import ceng453.backend.models.leaderboardDTOs.authDTOs.AddScoreDTO;
+import ceng453.backend.models.leaderboardDTOs.authDTOs.LeaderboardDTO;
 import ceng453.backend.services.leaderboard.ILeaderboardService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("api/leaderboard")
 @RequiredArgsConstructor
@@ -20,8 +19,7 @@ public class LeaderboardController {
 
     /**
      * This method used to fetch the leaderboard for a given a time period.
-     * @param startDate: The start date for the leaderboard.
-     * @param endDate: The end date for the leaderboard.
+     * @param leaderboardDTO: The leaderboardDTO object.
      * @return A sorted list of the scores for the given time period.
      */
     @ApiOperation(
@@ -29,15 +27,14 @@ public class LeaderboardController {
             notes = "Get the scores for a given time period",
             response = ResponseEntity.class
     )
-    @GetMapping("/get-scores")
-    public ResponseEntity<BaseResponse> getLeaderboard(String startDate, String endDate) {
-        return leaderboardService.getLeaderboard(startDate, endDate);
+    @GetMapping("")
+    public ResponseEntity<BaseResponse> getLeaderboard(@RequestBody LeaderboardDTO leaderboardDTO) {
+        return leaderboardService.getLeaderboard(leaderboardDTO.getStartDate(), leaderboardDTO.getEndDate());
     }
 
     /**
      * This method used to add a score for the user.
-     * @param username: The username of the user.
-     * @param score: The score of the user.
+     * @param addScoreDTO: The addScoreDTO object.
      * @return A response with the status of the request.
      */
     @ApiOperation(
@@ -45,8 +42,8 @@ public class LeaderboardController {
             notes = "Add a score with the username and score",
             response = ResponseEntity.class
     )
-    @PostMapping("/add-score")
-    public ResponseEntity<BaseResponse> getLeaderboard(String username, Integer score) {
-        return leaderboardService.addScore(username, score);
+    @PostMapping("")
+    public ResponseEntity<BaseResponse> addScore(@RequestBody AddScoreDTO addScoreDTO) {
+        return leaderboardService.addScore(addScoreDTO.getUsername(), addScoreDTO.getScore());
     }
 }
