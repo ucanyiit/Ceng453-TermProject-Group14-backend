@@ -93,11 +93,12 @@ public class UserConfigs {
         }
         return user5;
     }
-    static public JSONObject loginRequest(JSONObject user) {
+    static public Map<String, String> loginRequest(JSONObject user) {
         try {
-            user.remove("email");
-            user.remove("passwordReminder");
-            return user;
+            Map<String, String> map = new HashMap<>();
+            map.put("username", user.getString("username"));
+            map.put("password", user.getString("password"));
+            return map;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -116,15 +117,15 @@ public class UserConfigs {
         }
         return null;
     }
-    static public JSONObject passwordReminderRequest(JSONObject user) {
+    static public Map<String, String> passwordReminderRequest(JSONObject user) {
         try {
-            user.remove("email");
-            user.remove("password");
-            user.remove("passwordReminder");
-            return user;
+            Map<String, String> map = new HashMap<>();
+            map.put("username", user.getString("username"));
+            return map;
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
     }
+
 }

@@ -47,6 +47,10 @@ class BackendApplicationTests {
 
     }
 
+    /**
+     * Test the Register Endpoint. It uses the UserConfigs class to get the user data and tries to save the user to the database.
+     * Nothing else is tested.
+     */
     @Test
     void apiTestRegister() {
         try {
@@ -61,91 +65,64 @@ class BackendApplicationTests {
             System.out.println(e.getMessage());
         }
     }
-//
-//    @Test
-//    void apiLoginTest1() {
-//        try {
-//            JSONObject userJson = UserConfigs.user1();
-//            JSONObject loginJson = new JSONObject();
-//            loginJson.put("username", userJson.get("username"));
-//            loginJson.put("password", userJson.get("password"));
-//
-//            URL url = new URL(baseUrl + "auth/login" + UserConfigs.makeQuery(loginJson));
-//            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-//            conn.setRequestProperty("accept", "application/json");
-//            conn.setRequestProperty("Content-Type", "application/json");
-//            conn.setRequestMethod("POST");
-//            conn.setDoOutput(true);
-//
-//            InputStream responseStream = conn.getInputStream();
-//
-//        } catch (Exception e) {
-//            System.out.println(e.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    void apiRemindPasswordTest1() {
-//        try {
-//            JSONObject userJson = UserConfigs.user1();
-//            JSONObject remindJson = new JSONObject();
-//            remindJson.put("username", userJson.get("username"));
-//
-//            URL url = new URL(baseUrl + "auth/remind-password" + UserConfigs.makeQuery(remindJson));
-//            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-//            conn.setRequestProperty("accept", "application/json");
-//            conn.setRequestProperty("Content-Type", "application/json");
-//            conn.setRequestMethod("POST");
-//            conn.setDoOutput(true);
-//
-//            InputStream responseStream = conn.getInputStream();
-//
-//        } catch (Exception e) {
-//            System.out.println(e.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    void apiRequestPasswordReset() {
-//        try {
-//            JSONObject userJson = UserConfigs.user1();
-//            JSONObject remindJson = new JSONObject();
-//            remindJson.put("username", userJson.get("username"));
-//
-//            URL url = new URL(baseUrl + "auth/request-password-reset" + UserConfigs.makeQuery(remindJson));
-//            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-//            conn.setRequestProperty("accept", "application/json");
-//            conn.setRequestProperty("Content-Type", "application/json");
-//            conn.setRequestMethod("POST");
-//            conn.setDoOutput(true);
-//
-//            InputStream responseStream = conn.getInputStream();
-//
-//        } catch (Exception e) {
-//            System.out.println(e.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    void apiResetPassword() {
-//        try {
-//            JSONObject userJson = UserConfigs.user1();
-//            JSONObject remindJson = new JSONObject();
-//            remindJson.put("username", userJson.get("username"));
-//            remindJson.put("password", userJson.get("password"));
-//
-//            URL url = new URL(baseUrl + "auth/reset-password" + UserConfigs.makeQuery(remindJson));
-//            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-//            conn.setRequestProperty("accept", "application/json");
-//            conn.setRequestProperty("Content-Type", "application/json");
-//            conn.setRequestMethod("GET");
-//            conn.setDoOutput(true);
-//
-//            InputStream responseStream = conn.getInputStream();
-//
-//        } catch (Exception e) {
-//            System.out.println(e.getMessage());
-//        }
-//    }
+
+    /**
+     * Test the Login Endpoint. It uses the UserConfigs class to get the user data and tries to login the user.
+     * Nothing else is tested.
+     */
+    @Test
+    void apiLoginTest() {
+        try {
+            JSONObject userJson = UserConfigs.user5();
+            restService = new RestService(new RestTemplateBuilder());
+            ResponseEntity<BaseResponse> response = restService.postRequest(
+                    baseUrl + "auth/login", UserConfigs.loginRequest(userJson));
+            System.out.println(response.getStatusCode());
+            assert response.getStatusCode() == HttpStatus.OK: "Response is not OK";
+            System.out.println(response.getBody().getResponse());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    /**
+     * Test the Remind Password Endpoint. It uses the UserConfigs class to get the user data and tries to retrieve the
+     * reminder password string of the user.
+     * Nothing else is tested.
+     */
+    @Test
+    void apiRemindPasswordTest() {
+        try {
+            JSONObject userJson = UserConfigs.user5();
+            restService = new RestService(new RestTemplateBuilder());
+            ResponseEntity<BaseResponse> response = restService.postRequest(
+                    baseUrl + "auth/remind-password", UserConfigs.passwordReminderRequest(userJson));
+            System.out.println(response.getStatusCode());
+            assert response.getStatusCode() == HttpStatus.OK: "Response is not OK";
+            System.out.println(response.getBody().getResponse());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    /**
+     * Test the Reset Password Endpoint. It uses the UserConfigs class to get the user data and tries to reset the
+     * password of the user by sending a token to its email.
+     */
+    @Test
+    void apiRequestPasswordReset() {
+        try {
+            JSONObject userJson = UserConfigs.user5();
+            restService = new RestService(new RestTemplateBuilder());
+            ResponseEntity<BaseResponse> response = restService.postRequest(
+                    baseUrl + "auth/request-password-reset", UserConfigs.passwordReminderRequest(userJson));
+            System.out.println(response.getStatusCode());
+            assert response.getStatusCode() == HttpStatus.OK: "Response is not OK";
+            System.out.println(response.getBody().getResponse());
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
 
 }
