@@ -1,10 +1,8 @@
 package ceng453.backend;
 
 import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.stream.*;
+import java.util.*;
 
 public class UserConfigs {
 
@@ -12,7 +10,7 @@ public class UserConfigs {
         String query = "";
         Iterator<String> keys = user.keys();
         try {
-            do {
+            do{
                 String key = keys.next().toString();
                 query += "&" + key + "='" + user.get(key);
             } while (keys.hasNext());
@@ -51,7 +49,6 @@ public class UserConfigs {
         return user2;
 
     }
-
     static public JSONObject user3() {
         JSONObject user3 = null;
         try {
@@ -96,18 +93,17 @@ public class UserConfigs {
         }
         return user5;
     }
-
-    static public JSONObject loginRequest(JSONObject user) {
+    static public Map<String, String> loginRequest(JSONObject user) {
         try {
-            user.remove("email");
-            user.remove("passwordReminder");
-            return user;
+            Map<String, String> map = new HashMap<>();
+            map.put("username", user.getString("username"));
+            map.put("password", user.getString("password"));
+            return map;
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
     }
-
     static public Map<String, String> registerRequest(JSONObject user) {
         try {
             Map<String, String> map = new HashMap<>();
@@ -121,16 +117,15 @@ public class UserConfigs {
         }
         return null;
     }
-
-    static public JSONObject passwordReminderRequest(JSONObject user) {
+    static public Map<String, String> passwordReminderRequest(JSONObject user) {
         try {
-            user.remove("email");
-            user.remove("password");
-            user.remove("passwordReminder");
-            return user;
+            Map<String, String> map = new HashMap<>();
+            map.put("username", user.getString("username"));
+            return map;
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
     }
+
 }
