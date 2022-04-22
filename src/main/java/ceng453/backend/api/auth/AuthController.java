@@ -1,6 +1,7 @@
 package ceng453.backend.api.auth;
 
 import ceng453.backend.models.BaseResponse;
+import ceng453.backend.models.authDTOs.RegisterDTO;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 public class AuthController {
 
     // Injection
-    private final IAuthenticationService authService;
+    private final AuthenticationService authService;
 
     /**
      * This method is used to login a user.
@@ -49,10 +50,7 @@ public class AuthController {
 
     /**
      * This method is used to register a user.
-     * @param username: The unique username of the user.
-     * @param email: The email of the user.
-     * @param password: The password of the user.
-     * @param passwordReminder: The password remember question set by the user.
+     * @param registerDTO: The registerDTO of the user.
      * @return true if successful, otherwise false.
      */
     @ApiOperation(
@@ -61,16 +59,9 @@ public class AuthController {
             response = ResponseEntity.class
     )
     @PostMapping("/register")
-    public ResponseEntity<BaseResponse> register(
-            @ApiParam(value = "The unique username", example = "yigitucan")
-            @RequestBody String username,
-            @ApiParam(value = "The unique email", example = "ucanyiit@gmail.com")
-            @RequestBody String email,
-            @ApiParam(value = "The password that contains more than 8 character", example = "ucanucan")
-            @RequestBody String password,
-            @ApiParam(value = "A reminder to user for her/his password in case of she/he forgot", example = "surname multiplied by two")
-            @RequestBody String passwordReminder) {
-        return authService.register(username, email, password, passwordReminder);
+    @ApiParam(value = "The registerDTO of the user", required = true)
+    public ResponseEntity<BaseResponse> register(@RequestBody RegisterDTO registerDTO) {
+        return authService.register(registerDTO.username, registerDTO.email, registerDTO.password, registerDTO.passwordReminder);
     }
 
     /**
@@ -105,11 +96,11 @@ public class AuthController {
     @GetMapping("/reset-password")
     public ResponseEntity<BaseResponse> changePassword(
             @ApiParam(value = "The unique username", example = "yigitucan")
-            @RequestBody String username,
+            @RequestParam String username,
             @ApiParam(value = "The new password that contains more than 8 character", example = "yiityiit")
-            @RequestBody String password,
+            @RequestParam String password,
             @ApiParam(value = "The token sent to the user's email", example = "<some_long_and_random_string>")
-            @RequestBody String token) {
+            @RequestParam String token) {
         return authService.resetPassword(username, password, token);
     }
 
