@@ -22,15 +22,19 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      * @apiNote This method enables authorization for the endpoints. If an endpoint is wanted as public, then it should be
      * allowed in the method with antMatchers specifying the pattern.
      */
+    String[] allowedPaths = new String[]{
+            "/",
+            "/api/auth/**",
+            "/api/leaderboard/**",
+            "/swagger-ui/**",
+            "/swagger-resources/**",
+            "/v2/api-docs"};
+    
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/").permitAll()
-                .antMatchers("/api/auth/**").permitAll()
-                .antMatchers("/api/leaderboard/*").permitAll()
-                .antMatchers("/v2/api-docs", "/swagger-resources/**",
-                        "/swagger-ui/**").permitAll()
+                .antMatchers(allowedPaths).permitAll()
                 .anyRequest()
                 .fullyAuthenticated()
                 .and()
