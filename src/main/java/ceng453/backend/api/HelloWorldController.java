@@ -4,7 +4,7 @@ import ceng453.backend.models.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-@RequestMapping("/")
+@RequestMapping("/api")
 @RestController
 public class HelloWorldController {
     @GetMapping(produces = "application/json")
