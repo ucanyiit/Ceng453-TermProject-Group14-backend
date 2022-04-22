@@ -1,12 +1,26 @@
 package ceng453.backend.models;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-public class BaseResponse {
+import java.io.Serializable;
+
+@Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class BaseResponse implements Serializable {
+    @JsonProperty("status")
     public boolean status;
+    @JsonProperty("message")
     public String message;
+    @JsonProperty("data")
     public String response;
 
     /**
@@ -16,11 +30,11 @@ public class BaseResponse {
      * @param message the error message if the request is unsuccessful. Otherwise it will be emptry string.
      * @param response the response of the request as a string. This field can be converted into the required object.
      */
-    public BaseResponse(boolean status, String message, String response) {
-        this.status = status;
-        this.message = message;
-        this.response = response;
-    }
+//    public BaseResponse(boolean status, String message, String response) {
+//        this.status = status;
+//        this.message = message;
+//        this.response = response;
+//    }
 
     public boolean getStatus() {
         return this.status;
