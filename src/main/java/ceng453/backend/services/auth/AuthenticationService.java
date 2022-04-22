@@ -8,6 +8,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import org.javatuples.Pair;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
@@ -34,6 +35,9 @@ public class AuthenticationService implements IAuthenticationService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Value("${server.servlet.session.cookie.max-age}")
+    private long cookieDuration;
 
     HashMap<String, Pair<String, Date>> tokenMap = new HashMap<>();
 
@@ -75,7 +79,7 @@ public class AuthenticationService implements IAuthenticationService {
                                 .map(GrantedAuthority::getAuthority)
                                 .collect(Collectors.toList()))
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 86_400_000)) // 1 day
+                .setExpiration(new Date(System.currentTimeMillis() + cookieDuration)) // 1 day
                 .signWith(SignatureAlgorithm.HS512,
                         secretKey.getBytes()).compact();
     }
@@ -146,7 +150,7 @@ public class AuthenticationService implements IAuthenticationService {
 
         // Generate a token here
         String token = createToken(user.getUsername());
-        tokenMap.put(user.getUsername(), new Pair<>(token, new Date(System.currentTimeMillis() + 86_400_000)));
+        tokenMap.put(user.getUsername(), new Pair<>(token, new Date(System.currentTimeMillis() + cookieDuration)));
 
         try {
             SimpleMailMessage message = new SimpleMailMessage();
