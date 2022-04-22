@@ -78,7 +78,6 @@ class BackendApplicationTests {
                     baseUrl + "auth/login", UserConfigs.loginRequest(userJson));
             System.out.println(response.getStatusCode());
             assert response.getStatusCode() == HttpStatus.OK: "Response is not OK";
-            System.out.println(response.getBody().getResponse());
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -98,7 +97,6 @@ class BackendApplicationTests {
                     baseUrl + "auth/remind-password", UserConfigs.passwordReminderRequest(userJson));
             System.out.println(response.getStatusCode());
             assert response.getStatusCode() == HttpStatus.OK: "Response is not OK";
-            System.out.println(response.getBody().getResponse());
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -117,7 +115,6 @@ class BackendApplicationTests {
                     baseUrl + "auth/request-password-reset", UserConfigs.passwordReminderRequest(userJson));
             System.out.println(response.getStatusCode());
             assert response.getStatusCode() == HttpStatus.OK: "Response is not OK";
-            System.out.println(response.getBody().getResponse());
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
