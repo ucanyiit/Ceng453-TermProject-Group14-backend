@@ -1,16 +1,15 @@
 package ceng453.backend.models.leaderboardDTOs;
 
-import ceng453.backend.models.authDTOs.UsernameDTO;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
-public class ScoreDTO extends UsernameDTO {
-    @ApiModelProperty(value = "The score of a game.", example = "10")
-    private Integer score;
+@Setter
+public class ScoreDTO {
+    @ApiModelProperty(value = "The username of the player that got the score.", example = "yigitucan")
+    private String username;
 
-    public ScoreDTO(String username, Integer score) {
-        super(username);
-        this.score = score;
-    }
+    @ApiModelProperty(value = "The score of the user for the game.", example = "10")
+    private Integer score;
 }

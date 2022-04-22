@@ -9,7 +9,8 @@ public class LeaderboardScoreDTO extends ScoreDTO {
     private String date;
 
     public LeaderboardScoreDTO(String username, Integer score, String date) {
-        super(username, score);
+        this.setUsername(username);
+        this.setScore(score);
         this.date = date;
     }
 }
