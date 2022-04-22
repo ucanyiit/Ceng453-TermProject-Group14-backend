@@ -1,9 +1,14 @@
 package ceng453.backend.models;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 
 @Table(name = "property_games")
 @Entity
+@Getter
+@Setter
 public class PropertyGame {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -30,45 +35,6 @@ public class PropertyGame {
         this.owner = owner;
         this.location = location;
         this.type = type;
-        this.price = price;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-    public Property getProperty() {
-        return property;
-    }
-
-    public void setProperty(Property property) {
-        this.property = property;
-    }
-
-    public Game getGame() {
-        return game;
-    }
-
-    public Player getOwner() {
-        return owner;
-    }
-
-    public void setOwner(Player owner) {
-        this.owner = owner;
-    }
-
-    public Integer getLocation() {
-        return location;
-    }
-
-    public PropertyType getType() {
-        return type;
-    }
-
-    public Integer getPrice() {
-        return price;
-    }
-
-    public void setPrice(Integer price) {
         this.price = price;
     }
 }

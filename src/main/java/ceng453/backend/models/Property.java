@@ -1,7 +1,7 @@
 package ceng453.backend.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.annotations.ColumnDefault;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -9,6 +9,8 @@ import java.util.List;
 
 @Table(name = "properties")
 @Entity
+@Getter
+@Setter
 public class Property {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -22,25 +24,5 @@ public class Property {
 
     public Property(String name) {
         this.name = name;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public List<PropertyGame> getProperties() {
-        return properties;
-    }
-
-    public void setProperties(List<PropertyGame> properties) {
-        this.properties = properties;
     }
 }

@@ -1,9 +1,14 @@
 package ceng453.backend.models;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 
 @Table(name = "actions")
 @Entity
+@Getter
+@Setter
 public class Action {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -25,45 +30,5 @@ public class Action {
         this.amount = amount;
         this.receiverPlayer = receiverPlayer;
         this.profit = profit;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public ActionType getType() {
-        return type;
-    }
-
-    public void setType(ActionType type) {
-        this.type = type;
-    }
-
-    public Integer getAmount() {
-        return amount;
-    }
-
-    public void setAmount(Integer amount) {
-        this.amount = amount;
-    }
-
-    public Player getReceiverPlayer() {
-        return receiverPlayer;
-    }
-
-    public void setReceiverPlayer(Player receiverPlayer) {
-        this.receiverPlayer = receiverPlayer;
-    }
-
-    public Integer getProfit() {
-        return profit;
-    }
-
-    public void setProfit(Integer profit) {
-        this.profit = profit;
-    }
-
-    public Move getMove() {
-        return move;
     }
 }

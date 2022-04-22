@@ -1,5 +1,7 @@
 package ceng453.backend.models;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -7,6 +9,8 @@ import java.util.Date;
 
 @Table(name = "scores")
 @Entity
+@Getter
+@Setter
 public class Score {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -34,37 +38,5 @@ public class Score {
         this.user = user;
         this.game = game;
         this.score = score;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Game getGame() {
-        return game;
-    }
-
-    public void setGame(Game game) {
-        this.game = game;
-    }
-
-    public Integer getScore() {
-        return score;
-    }
-
-    public void setScore(Integer score) {
-        this.score = score;
-    }
-
-    public Date getTimestamp() {
-        return timestamp;
     }
 }

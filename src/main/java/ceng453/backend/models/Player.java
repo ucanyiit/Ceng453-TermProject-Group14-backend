@@ -1,5 +1,7 @@
 package ceng453.backend.models;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
@@ -8,6 +10,8 @@ import java.util.List;
 
 @Table(name = "players")
 @Entity
+@Getter
+@Setter
 public class Player {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -37,53 +41,5 @@ public class Player {
         this.user = user;
         this.game = game;
         this.orderOfPlay = orderOfPlay;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public Game getGame() {
-        return game;
-    }
-
-    public Integer getOrderOfPlay() {
-        return orderOfPlay;
-    }
-
-    public void setOrderOfPlay(Integer order) {
-        this.orderOfPlay = order;
-    }
-
-    public Integer getMoney() {
-        return money;
-    }
-
-    public void setMoney(Integer money) {
-        this.money = money;
-    }
-
-    public Integer getJailDuration() {
-        return jailDuration;
-    }
-
-    public void setJailDuration(Integer jailDuration) {
-        this.jailDuration = jailDuration;
-    }
-
-    public List<Move> getMoves() {
-        return moves;
-    }
-
-    public List<PropertyGame> getProperties() {
-        return properties;
-    }
-
-    public List<Action> getReceivedActions() {
-        return receivedActions;
     }
 }

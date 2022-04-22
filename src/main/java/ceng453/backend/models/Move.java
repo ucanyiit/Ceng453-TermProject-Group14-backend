@@ -1,9 +1,14 @@
 package ceng453.backend.models;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 
 @Table(name = "moves")
 @Entity
+@Getter
+@Setter
 public class Move {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -34,65 +39,5 @@ public class Move {
         this.diceRoll2 = diceRoll2;
         this.currentLocation = currentLocation;
         this.previousLocation = previousLocation;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public Game getGame() {
-        return game;
-    }
-
-    public Player getPlayer() {
-        return player;
-    }
-
-    public Integer getTurn_id() {
-        return turn_id;
-    }
-
-    public void setTurn_id(Integer turn_id) {
-        this.turn_id = turn_id;
-    }
-
-    public Integer getDiceRoll1() {
-        return diceRoll1;
-    }
-
-    public void setDiceRoll1(Integer diceRoll1) {
-        this.diceRoll1 = diceRoll1;
-    }
-
-    public Integer getDiceRoll2() {
-        return diceRoll2;
-    }
-
-    public void setDiceRoll2(Integer diceRoll2) {
-        this.diceRoll2 = diceRoll2;
-    }
-
-    public Integer getCurrentLocation() {
-        return currentLocation;
-    }
-
-    public void setCurrentLocation(Integer currentLocation) {
-        this.currentLocation = currentLocation;
-    }
-
-    public Integer getPreviousLocation() {
-        return previousLocation;
-    }
-
-    public void setPreviousLocation(Integer previousLocation) {
-        this.previousLocation = previousLocation;
-    }
-
-    public Action getAction() {
-        return action;
-    }
-
-    public void setAction(Action action) {
-        this.action = action;
     }
 }
