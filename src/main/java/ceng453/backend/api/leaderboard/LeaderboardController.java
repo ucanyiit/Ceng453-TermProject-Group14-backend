@@ -1,10 +1,10 @@
 package ceng453.backend.api.leaderboard;
 
-import ceng453.backend.models.DTOs.leaderboard.LeaderboardDTO;
 import ceng453.backend.models.DTOs.leaderboard.ScoreDTO;
 import ceng453.backend.models.responses.BaseResponse;
 import ceng453.backend.services.leaderboard.ILeaderboardService;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +20,10 @@ public class LeaderboardController {
     /**
      * This method used to fetch the leaderboard for a given a time period.
      *
-     * @param leaderboardDTO: The leaderboardDTO object.
+     * @param startDate: The start date for scores.
+     *                   The format is DD-MM-YYYY.
+     * @param endDate:   The end date for scores.
+     *                   The format is DD-MM-YYYY.
      * @return A sorted list of the scores for the given time period.
      */
     @ApiOperation(
@@ -29,8 +32,12 @@ public class LeaderboardController {
             response = ResponseEntity.class
     )
     @GetMapping("")
-    public ResponseEntity<BaseResponse> getLeaderboard(@RequestBody LeaderboardDTO leaderboardDTO) {
-        return leaderboardService.getLeaderboard(leaderboardDTO.getStartDate(), leaderboardDTO.getEndDate());
+    public ResponseEntity<BaseResponse> getLeaderboard(
+            @ApiParam(value = "The unique username", example = "yigitucan")
+            @RequestParam String startDate,
+            @ApiParam(value = "The new password that contains more than 8 character", example = "yiityiit")
+            @RequestParam String endDate) {
+        return leaderboardService.getLeaderboard(startDate, endDate);
     }
 
     /**
