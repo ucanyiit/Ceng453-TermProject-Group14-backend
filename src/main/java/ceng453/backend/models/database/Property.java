@@ -17,14 +17,15 @@ public class Property {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @OneToMany(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<PropertyGame> properties = new ArrayList<>();
+    private List<Tile> properties = new ArrayList<>();
     private String name;
     private PropertyType type;
 
     public Property() {
     }
 
-    public Property(String name) {
+    public Property(String name, PropertyType type) {
         this.name = name;
+        this.type = type;
     }
 }

@@ -30,7 +30,7 @@ public class Player {
     @OneToMany(mappedBy = "player", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Move> moves = new ArrayList<>();
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<PropertyGame> properties = new ArrayList<>();
+    private List<Tile> properties = new ArrayList<>();
     @OneToMany(mappedBy = "receiverPlayer", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Action> receivedActions = new ArrayList<>();
 
