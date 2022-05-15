@@ -1,5 +1,6 @@
 package ceng453.backend.models.database;
 
+import ceng453.backend.models.enums.PropertyType;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,6 +19,7 @@ public class Property {
     @OneToMany(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<PropertyGame> properties = new ArrayList<>();
     private String name;
+    private PropertyType type;
 
     public Property() {
     }

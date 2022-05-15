@@ -22,7 +22,7 @@ public class Move {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "action_id", referencedColumnName = "id")
     private Action action;
-    private Integer turn_id;
+    private Integer turn;
     private Integer diceRoll1;
     private Integer diceRoll2;
     private Integer currentLocation;
@@ -31,10 +31,10 @@ public class Move {
     public Move() {
     }
 
-    public Move(Game game, Player player, Integer turn_id, Integer diceRoll1, Integer diceRoll2, Integer currentLocation, Integer previousLocation) {
+    public Move(Game game, Player player, Integer turn, Integer diceRoll1, Integer diceRoll2, Integer currentLocation, Integer previousLocation) {
         this.game = game;
         this.player = player;
-        this.turn_id = turn_id;
+        this.turn = turn;
         this.diceRoll1 = diceRoll1;
         this.diceRoll2 = diceRoll2;
         this.currentLocation = currentLocation;

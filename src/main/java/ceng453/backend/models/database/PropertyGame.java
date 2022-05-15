@@ -1,6 +1,5 @@
 package ceng453.backend.models.database;
 
-import ceng453.backend.models.enums.PropertyType;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,18 +23,16 @@ public class PropertyGame {
     @JoinColumn(name = "player_id", nullable = false)
     private Player owner;
     private Integer location;
-    private PropertyType type;
     private Integer price;
 
     public PropertyGame() {
     }
 
-    public PropertyGame(Property property, Game game, Player owner, Integer location, PropertyType type, Integer price) {
+    public PropertyGame(Property property, Game game, Player owner, Integer location, Integer price) {
         this.property = property;
         this.game = game;
         this.owner = owner;
         this.location = location;
-        this.type = type;
         this.price = price;
     }
 }
