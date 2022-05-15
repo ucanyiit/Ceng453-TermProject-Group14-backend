@@ -1,6 +1,6 @@
 package ceng453.backend.models.enums;
 
-public enum PropertyType {
+public enum TileType {
     JAIL,
     INCOME_TAX,
     PUBLIC_PROPERTY,

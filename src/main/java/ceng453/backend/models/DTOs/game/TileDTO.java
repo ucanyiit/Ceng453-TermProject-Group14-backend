@@ -1,6 +1,7 @@
 package ceng453.backend.models.DTOs.game;
 
-import ceng453.backend.models.enums.PropertyType;
+import ceng453.backend.models.database.Tile;
+import ceng453.backend.models.enums.TileType;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 
@@ -16,12 +17,19 @@ public class TileDTO {
     private Integer price;
 
     @ApiModelProperty(value = "The type of the property.", allowableValues = "JAIL, INCOME_TAX, PUBLIC_PROPERTY, PRIVATE_PROPERTY, VISITING_SPACE, STARTING_POINT", required = true)
-    private PropertyType propertyType;
+    private TileType propertyType;
 
-    public TileDTO(String name, Integer location, Integer price, PropertyType propertyType) {
+    public TileDTO(String name, Integer location, Integer price, TileType propertyType) {
         this.name = name;
         this.location = location;
         this.price = price;
         this.propertyType = propertyType;
+    }
+
+    public TileDTO(Tile tile) {
+        this.name = tile.getProperty().getName();
+        this.location = tile.getLocation();
+        this.price = tile.getPrice();
+        this.propertyType = tile.getProperty().getType();
     }
 }

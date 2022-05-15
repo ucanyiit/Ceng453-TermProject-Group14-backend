@@ -1,6 +1,6 @@
 package ceng453.backend.models.database;
 
-import ceng453.backend.models.enums.PropertyType;
+import ceng453.backend.models.enums.TileType;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,12 +19,12 @@ public class Property {
     @OneToMany(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Tile> properties = new ArrayList<>();
     private String name;
-    private PropertyType type;
+    private TileType type;
 
     public Property() {
     }
 
-    public Property(String name, PropertyType type) {
+    public Property(String name, TileType type) {
         this.name = name;
         this.type = type;
     }
