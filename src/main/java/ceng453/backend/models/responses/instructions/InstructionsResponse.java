@@ -1,6 +1,7 @@
-package ceng453.backend.models.responses;
+package ceng453.backend.models.responses.instructions;
 
 
+import ceng453.backend.models.responses.BaseResponse;
 import lombok.Getter;
 import lombok.Setter;
 

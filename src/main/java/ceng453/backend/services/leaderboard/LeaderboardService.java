@@ -4,7 +4,7 @@ import ceng453.backend.models.DTOs.leaderboard.LeaderboardScoreDTO;
 import ceng453.backend.models.database.Score;
 import ceng453.backend.models.database.User;
 import ceng453.backend.models.responses.BaseResponse;
-import ceng453.backend.models.responses.Leaderboard.ScoresResponse;
+import ceng453.backend.models.responses.leaderboard.ScoresResponse;
 import ceng453.backend.repositories.ScoreRepository;
 import ceng453.backend.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

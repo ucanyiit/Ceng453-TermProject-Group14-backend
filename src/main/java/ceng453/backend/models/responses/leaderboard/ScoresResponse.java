@@ -1,4 +1,4 @@
-package ceng453.backend.models.responses.Leaderboard;
+package ceng453.backend.models.responses.leaderboard;
 
 
 import ceng453.backend.models.DTOs.leaderboard.LeaderboardScoreDTO;
