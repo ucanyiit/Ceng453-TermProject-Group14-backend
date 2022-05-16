@@ -63,7 +63,7 @@ public class GameService implements IGameService {
                 game.getId(),
                 game.getType(),
                 createAndGetTiles(game),
-                players.stream().map(PlayerDTO::new).collect(Collectors.toList())
+                players.stream().map(p -> new PlayerDTO(p, 0)).collect(Collectors.toList())
         );
 
         return new GameResponse(true, "Game is created.", gameDTO).prepareResponse(HttpStatus.OK);

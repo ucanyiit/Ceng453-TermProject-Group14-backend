@@ -18,17 +18,23 @@ public class PlayerDTO {
     @ApiModelProperty(value = "The player's current jail duration.", example = "2", required = true)
     private Integer jailDuration;
 
-    public PlayerDTO(boolean isBot, Integer orderOfPlay, Integer money, Integer jailDuration) {
+    @ApiModelProperty(value = "The player's current location.", example = "4", required = true)
+    private Integer location;
+
+
+    public PlayerDTO(boolean isBot, Integer orderOfPlay, Integer money, Integer jailDuration, Integer location) {
         this.isBot = isBot;
         this.orderOfPlay = orderOfPlay;
         this.money = money;
         this.jailDuration = jailDuration;
+        this.location = location;
     }
 
-    public PlayerDTO(Player player) {
+    public PlayerDTO(Player player, Integer location) {
         this.isBot = player.getUser() == null;
         this.orderOfPlay = player.getOrderOfPlay();
         this.money = player.getMoney();
         this.jailDuration = player.getJailDuration();
+        this.location = location;
     }
 }
