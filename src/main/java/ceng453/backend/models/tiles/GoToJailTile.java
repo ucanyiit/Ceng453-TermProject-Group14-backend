@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GoToJailTile extends TileComposition {
-    public final static Integer LOCATION = 14;
+    public final static Integer LOCATION = 12;
 
     public GoToJailTile(Game game) {
         super(new Property("Go To Jail", TileType.JAIL), game, null, LOCATION, 0);

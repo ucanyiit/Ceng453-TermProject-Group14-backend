@@ -28,6 +28,7 @@ public class GameService implements IGameService {
 
     private final static Double STARTING_PRIVATE_PROPERTY_PRICE = 100.;
     private final static Double PRIVATE_PROPERTY_PRICE_INCREMENT = 400. / 12;
+    private final static Integer TILE_COUNT = 16;
 
     @Autowired
     private GameRepository gameRepository;
@@ -75,7 +76,7 @@ public class GameService implements IGameService {
         tileCompositions.add(new GoToJailTile(game));
         tileCompositions.add(new JustVisitingTile(game));
 
-        int randomLocation = getIntegerNotUsed(usedLocations, 20);
+        int randomLocation = getIntegerNotUsed(usedLocations, TILE_COUNT);
 
         usedLocations.add(randomLocation);
         tileCompositions.add(new IncomeTaxTile(game, randomLocation));
@@ -83,7 +84,7 @@ public class GameService implements IGameService {
         int propertyIndex = 0;
 
         while (tileCompositions.size() < 8) {
-            randomLocation = getIntegerNotUsed(usedLocations, 20);
+            randomLocation = getIntegerNotUsed(usedLocations, TILE_COUNT);
             usedLocations.add(randomLocation);
 
             Property property = properties.get(propertyIndex++);
@@ -94,7 +95,7 @@ public class GameService implements IGameService {
         double privatePropertyPrice = STARTING_PRIVATE_PROPERTY_PRICE;
         int location = 0;
 
-        while (tileCompositions.size() < 20) {
+        while (tileCompositions.size() < TILE_COUNT) {
             Property property = properties.get(propertyIndex++);
 
             while (usedLocations.contains(location)) location++;
@@ -133,7 +134,7 @@ public class GameService implements IGameService {
             createAndSaveProperty(name, TileType.PUBLIC_PROPERTY);
         }
 
-        List<String> privatePropertyNames = Arrays.asList("p1", "p2", "p3", "p4", "p5", "p6", "p7", "p8", "p9", "p10", "p11", "p12");
+        List<String> privatePropertyNames = Arrays.asList("p1", "p2", "p3", "p4", "p5", "p6", "p7", "p8");
 
         for (String name : privatePropertyNames) {
             createAndSaveProperty(name, TileType.PRIVATE_PROPERTY);
