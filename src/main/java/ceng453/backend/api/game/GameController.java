@@ -31,7 +31,6 @@ public class GameController {
     )
     @PostMapping(produces = "application/json")
     public Object createGame(@RequestBody StartGameDTO startGameDTO) {
-
-        return gameService.createGame(startGameDTO.getType(), "testUsername");
+        return gameService.createGame(startGameDTO.getType(), "testUsername", 2);
     }
 }

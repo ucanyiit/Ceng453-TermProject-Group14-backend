@@ -10,9 +10,11 @@ public interface IGameService {
     /**
      * This method is used to create a new game.
      *
-     * @param gameType The type of game to create.
-     * @param username The username of the player
+     * @param gameType    The type of game to create.
+     * @param username    The username of the player
+     *                    who is creating the game.
+     * @param playerCount The number of players in the game.
      * @return A response entity with the game details
      */
-    ResponseEntity<BaseResponse> createGame(GameType gameType, String username);
+    ResponseEntity<BaseResponse> createGame(GameType gameType, String username, Integer playerCount);
 }

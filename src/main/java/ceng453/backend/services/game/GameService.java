@@ -1,6 +1,7 @@
 package ceng453.backend.services.game;
 
 import ceng453.backend.models.DTOs.game.GameDTO;
+import ceng453.backend.models.DTOs.game.PlayerDTO;
 import ceng453.backend.models.DTOs.game.TileDTO;
 import ceng453.backend.models.database.Game;
 import ceng453.backend.models.database.Player;
@@ -42,15 +43,29 @@ public class GameService implements IGameService {
     private TileRepository tileRepository;
 
     @Override
-    public ResponseEntity<BaseResponse> createGame(GameType gameType, String username) {
+    public ResponseEntity<BaseResponse> createGame(GameType gameType, String username, Integer playerCount) {
         User user = userRepository.findByUsername(username);
-        Game game = new Game(2, gameType);
-        Player player = new Player(user, game, 0);
+        Game game = new Game(playerCount, gameType);
+        List<Player> players = new ArrayList<>();
+
+        players.add(new Player(user, game, 0));
+
+        if (gameType == GameType.SINGLEPLAYER) {
+            for (int i = 1; i < playerCount; i++) {
+                players.add(new Player(null, game, 1));
+            }
+        }
 
         gameRepository.save(game);
-        playerGameRepository.save(player);
+        playerGameRepository.saveAll(players);
 
-        GameDTO gameDTO = new GameDTO(game.getId(), game.getType(), createAndGetTiles(game));
+        GameDTO gameDTO = new GameDTO(
+                game.getId(),
+                game.getType(),
+                createAndGetTiles(game),
+                players.stream().map(PlayerDTO::new).collect(Collectors.toList())
+        );
+
         return new GameResponse(true, "Game is created.", gameDTO).prepareResponse(HttpStatus.OK);
     }
 
