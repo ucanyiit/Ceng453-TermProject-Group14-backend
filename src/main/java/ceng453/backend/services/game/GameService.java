@@ -1,5 +1,6 @@
 package ceng453.backend.services.game;
 
+import ceng453.backend.models.DTOs.game.DiceDTO;
 import ceng453.backend.models.DTOs.game.GameDTO;
 import ceng453.backend.models.DTOs.game.PlayerDTO;
 import ceng453.backend.models.DTOs.game.TileDTO;
@@ -10,18 +11,20 @@ import ceng453.backend.models.database.User;
 import ceng453.backend.models.enums.GameType;
 import ceng453.backend.models.enums.TileType;
 import ceng453.backend.models.responses.BaseResponse;
+import ceng453.backend.models.responses.game.DiceResponse;
 import ceng453.backend.models.responses.game.GameResponse;
 import ceng453.backend.models.tiles.*;
 import ceng453.backend.repositories.*;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.util.JSONPObject;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -161,4 +164,35 @@ public class GameService implements IGameService {
 
         return properties;
     }
+
+    public ResponseEntity<BaseResponse> rollDice(int gameId, String token) {
+        String[] chunks = token.split("\\.");
+        Base64.Decoder decoder = Base64.getUrlDecoder();
+
+        String payload = new String(decoder.decode(chunks[1]));
+
+        try {
+            JSONObject json = new JSONObject(payload);
+            String username = (String) json.get("sub");
+            // TODO: validate user name here
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return new DiceResponse(
+                    false,
+                    "The token can't be parsed",
+                    null
+            ).prepareResponse(HttpStatus.BAD_REQUEST);
+        }
+
+        // TODO: validate game id here
+
+        DiceDTO dice = new DiceDTO(gameId, token);
+        dice.rollDice();
+        return new DiceResponse(
+                true,
+                "Successfully rolled a dice",
+                dice
+        ).prepareResponse(HttpStatus.OK);
+    }
+
 }

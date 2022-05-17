@@ -17,4 +17,6 @@ public interface IGameService {
      * @return A response entity with the game details
      */
     ResponseEntity<BaseResponse> createGame(GameType gameType, String username, Integer playerCount);
+
+    ResponseEntity<BaseResponse> rollDice(int gameId, String token);
 }
