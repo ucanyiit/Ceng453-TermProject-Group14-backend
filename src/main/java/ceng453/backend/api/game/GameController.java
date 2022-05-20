@@ -2,6 +2,7 @@ package ceng453.backend.api.game;
 
 import ceng453.backend.models.DTOs.game.DiceDTO;
 import ceng453.backend.models.DTOs.game.StartGameDTO;
+import ceng453.backend.models.DTOs.game.TurnDTO;
 import ceng453.backend.services.game.IGameService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -46,7 +47,13 @@ public class GameController {
         return gameService.rollDice(gameId, token);
     }
 
-    public Object endTurn(@RequestParam int gameId, @RequestParam String token) {
-        return gameService.endTurn(gameId, token);
+    @ApiOperation(
+            value = "End a turn",
+            notes = "It can be used to end a player's turn",
+            response = ResponseEntity.class
+    )
+    @PostMapping(path = "/end-turn", produces = "application/json")
+    public Object endTurn(@RequestBody TurnDTO turnDTO, @RequestHeader("Authorization") String token) {
+        return gameService.endTurn(turnDTO.getGameId(), token);
     }
 }
