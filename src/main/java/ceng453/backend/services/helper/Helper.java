@@ -1,5 +1,6 @@
 package ceng453.backend.services.helper;
 
+import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 import java.util.Base64;
@@ -12,5 +13,17 @@ public class Helper implements IHelper {
         Base64.Decoder decoder = Base64.getUrlDecoder();
 
         return new String(decoder.decode(chunks[1]));
+    }
+
+    @Override
+    public String getUsernameFromToken(String token) {
+        try {
+            JSONObject json = new JSONObject(this.getPayloadFromToken(token));
+            return  (String) json.get("sub");
+        } catch (Exception e) {
+            return null;
+        }
+
+
     }
 }
