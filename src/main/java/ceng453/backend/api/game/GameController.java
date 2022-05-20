@@ -45,4 +45,8 @@ public class GameController {
     public Object rollDice(@RequestParam int gameId, @RequestParam String token) {
         return gameService.rollDice(gameId, token);
     }
+
+    public Object endTurn(@RequestParam int gameId, @RequestParam String token) {
+        return gameService.endTurn(gameId, token);
+    }
 }
