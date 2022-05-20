@@ -13,11 +13,11 @@ import ceng453.backend.models.enums.TileType;
 import ceng453.backend.models.responses.BaseResponse;
 import ceng453.backend.models.responses.game.DiceResponse;
 import ceng453.backend.models.responses.game.GameResponse;
+import ceng453.backend.models.responses.game.TurnResponse;
 import ceng453.backend.models.tiles.*;
 import ceng453.backend.repositories.*;
 import ceng453.backend.services.helper.IHelper;
-import org.json.JSONException;
-import org.json.JSONObject;
+import ceng453.backend.services.validator.IValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,6 +45,8 @@ public class GameService implements IGameService {
     private TileRepository tileRepository;
     @Autowired
     private IHelper helper;
+    @Autowired
+    private IValidator validator;
 
     @Override
     public ResponseEntity<BaseResponse> createGame(GameType gameType, String username, Integer playerCount) {
@@ -167,32 +169,16 @@ public class GameService implements IGameService {
     }
 
     public ResponseEntity<BaseResponse> rollDice(int gameId, String token) {
-        try {
-            JSONObject json = new JSONObject(helper.getPayloadFromToken(token));
-            String username = (String) json.get("sub");
-            Game game = gameRepository.findById(gameId).orElse(null);
+        String username = helper.getUsernameFromToken(token);
+        Game game = gameRepository.findById(gameId).orElse(null);
 
-            if (game == null) // game id check
-                return new DiceResponse(false, "Game id not found", null)
-                        .prepareResponse(HttpStatus.NOT_FOUND);
+        if (game == null) // game id check
+            return new DiceResponse(false, "Game id not found", null)
+                    .prepareResponse(HttpStatus.NOT_FOUND);
 
-            if (!game // if the turn is not the player's, give an error
-                    .getPlayersIn()
-                    .get(game.getTurnOrder())
-                    .getUser()
-                    .getUsername()
-                    .equals(username))
-                return new DiceResponse(false, "The turn is not the player's", null)
-                        .prepareResponse(HttpStatus.FORBIDDEN);
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return new DiceResponse(
-                    false,
-                    "The token can't be parsed",
-                    null
-            ).prepareResponse(HttpStatus.BAD_REQUEST);
-        }
+        if (validator.isPlayersTurn(game, username))
+            return new DiceResponse(false, "The turn is not the player's", null)
+                    .prepareResponse(HttpStatus.FORBIDDEN);
 
         DiceDTO dice = new DiceDTO(gameId);
         dice.rollDice();
@@ -201,6 +187,23 @@ public class GameService implements IGameService {
                 "Successfully rolled a dice",
                 dice
         ).prepareResponse(HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<BaseResponse> endTurn(int gameId, String token) {
+        String username = helper.getUsernameFromToken(token);
+        Game game = gameRepository.findById(gameId).orElse(null);
+
+        if (game == null) // game id check
+            return new TurnResponse(false, "Game id not found", null)
+                    .prepareResponse(HttpStatus.NOT_FOUND);
+
+        if (validator.isPlayersTurn(game, username))
+            return new TurnResponse(false, "The turn is not the player's", null)
+                    .prepareResponse(HttpStatus.FORBIDDEN);
+
+        return new TurnResponse(true, "The turn is over", null)
+                .prepareResponse(HttpStatus.OK);
     }
 
 }

@@ -19,4 +19,6 @@ public interface IGameService {
     ResponseEntity<BaseResponse> createGame(GameType gameType, String username, Integer playerCount);
 
     ResponseEntity<BaseResponse> rollDice(int gameId, String token);
+
+    ResponseEntity<BaseResponse> endTurn(int gameId, String token);
 }
