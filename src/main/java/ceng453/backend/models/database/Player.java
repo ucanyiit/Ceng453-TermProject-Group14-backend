@@ -43,4 +43,12 @@ public class Player {
         this.orderOfPlay = orderOfPlay;
         this.money = 1500;
     }
+
+    public Integer getScore() {
+        Integer score = 0;
+        for (Tile tile : properties) {
+            score += tile.getPrice();
+        }
+        return score + money;
+    }
 }

@@ -1,5 +1,6 @@
 package ceng453.backend.services.helper;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
@@ -16,14 +17,8 @@ public class Helper implements IHelper {
     }
 
     @Override
-    public String getUsernameFromToken(String token) {
-        try {
-            JSONObject json = new JSONObject(this.getPayloadFromToken(token));
-            return  (String) json.get("sub");
-        } catch (Exception e) {
-            return null;
-        }
-
-
+    public String getUsernameFromToken(String token) throws JSONException {
+        JSONObject json = new JSONObject(this.getPayloadFromToken(token));
+        return (String) json.get("sub");
     }
 }

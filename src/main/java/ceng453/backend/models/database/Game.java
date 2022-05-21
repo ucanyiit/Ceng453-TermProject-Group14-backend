@@ -23,11 +23,11 @@ public class Game {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     @ColumnDefault(value = "0")
-    private Integer turn;
+    private Integer turn = 0;
     @ColumnDefault(value = "2")
-    private Integer playerCount;
+    private Integer playerCount = 2;
     @ColumnDefault(value = "0")
-    private Integer turnOrder;
+    private Integer turnOrder = 0;
     @Enumerated(EnumType.STRING)
     private GameType type;
 

@@ -4,10 +4,7 @@ import ceng453.backend.models.DTOs.game.DiceDTO;
 import ceng453.backend.models.DTOs.game.GameDTO;
 import ceng453.backend.models.DTOs.game.PlayerDTO;
 import ceng453.backend.models.DTOs.game.TileDTO;
-import ceng453.backend.models.database.Game;
-import ceng453.backend.models.database.Player;
-import ceng453.backend.models.database.Property;
-import ceng453.backend.models.database.User;
+import ceng453.backend.models.database.*;
 import ceng453.backend.models.enums.GameType;
 import ceng453.backend.models.enums.TileType;
 import ceng453.backend.models.responses.BaseResponse;
@@ -18,12 +15,17 @@ import ceng453.backend.models.tiles.*;
 import ceng453.backend.repositories.*;
 import ceng453.backend.services.helper.IHelper;
 import ceng453.backend.services.validator.IValidator;
+import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,7 +38,9 @@ public class GameService implements IGameService {
     @Autowired
     private GameRepository gameRepository;
     @Autowired
-    private PlayerGameRepository playerGameRepository;
+    private PlayerGameRepository playerRepository;
+    @Autowired
+    private ScoreRepository scoreRepository;
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -49,7 +53,14 @@ public class GameService implements IGameService {
     private IValidator validator;
 
     @Override
-    public ResponseEntity<BaseResponse> createGame(GameType gameType, String username, Integer playerCount) {
+    public ResponseEntity<BaseResponse> createGame(GameType gameType, String token, Integer playerCount) {
+        String username = null;
+        try {
+            username = helper.getUsernameFromToken(token);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return new GameResponse(false, "Authentication failed.", null).prepareResponse(HttpStatus.UNAUTHORIZED);
+        }
         User user = userRepository.findByUsername(username);
         Game game = new Game(playerCount, gameType);
         List<Player> players = new ArrayList<>();
@@ -63,7 +74,7 @@ public class GameService implements IGameService {
         }
 
         gameRepository.save(game);
-        playerGameRepository.saveAll(players);
+        playerRepository.saveAll(players);
 
         GameDTO gameDTO = new GameDTO(
                 game.getId(),
@@ -169,7 +180,14 @@ public class GameService implements IGameService {
     }
 
     public ResponseEntity<BaseResponse> rollDice(int gameId, String token) {
-        String username = helper.getUsernameFromToken(token);
+        String username = null;
+        try {
+            username = helper.getUsernameFromToken(token);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return new DiceResponse(false, "Authentication failed.", null).prepareResponse(HttpStatus.UNAUTHORIZED);
+        }
+
         Game game = gameRepository.findById(gameId).orElse(null);
 
         if (game == null) // game id check
@@ -191,7 +209,14 @@ public class GameService implements IGameService {
 
     @Override
     public ResponseEntity<BaseResponse> endTurn(int gameId, String token) {
-        String username = helper.getUsernameFromToken(token);
+        String username = null;
+        try {
+            username = helper.getUsernameFromToken(token);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return new TurnResponse(false, "Authentication failed.", null).prepareResponse(HttpStatus.UNAUTHORIZED);
+        }
+
         Game game = gameRepository.findById(gameId).orElse(null);
 
         if (game == null) // game id check
@@ -204,6 +229,29 @@ public class GameService implements IGameService {
 
         return new TurnResponse(true, "The turn is over", null)
                 .prepareResponse(HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<BaseResponse> resign(int gameId, String token) {
+        String username = null;
+        try {
+            username = helper.getUsernameFromToken(token);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return new BaseResponse(false, "Authentication failed.").prepareResponse(HttpStatus.UNAUTHORIZED);
+        }
+
+        Game game = gameRepository.findById(gameId).orElse(null);
+        User user = userRepository.findByUsername(username);
+        Player player = playerRepository.findByUserAndGame(user, game);
+
+        game.setEndDate(LocalDateTime.now());
+        gameRepository.save(game);
+
+        Score score = new Score(user, game, player.getScore());
+        scoreRepository.save(score);
+
+        return new BaseResponse(true, "Successfully resigned").prepareResponse(HttpStatus.OK);
     }
 
 }
