@@ -5,6 +5,7 @@ import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 import java.util.Base64;
+import java.util.HashSet;
 
 @Service
 public class Helper implements IHelper {
@@ -20,5 +21,15 @@ public class Helper implements IHelper {
     public String getUsernameFromToken(String token) throws JSONException {
         JSONObject json = new JSONObject(this.getPayloadFromToken(token));
         return (String) json.get("sub");
+    }
+
+    @Override
+    public Integer getIntegerNotUsed(HashSet<Integer> usedNumbers, Integer limit) {
+        while (true) {
+            int randomNumber = (int) (Math.random() * limit);
+            if (!usedNumbers.contains(randomNumber)) {
+                return randomNumber;
+            }
+        }
     }
 }
