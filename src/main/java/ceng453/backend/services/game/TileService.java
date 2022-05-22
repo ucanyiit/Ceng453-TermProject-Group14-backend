@@ -36,16 +36,21 @@ public class TileService {
     @Autowired
     private PropertyRepository propertyRepository;
 
-    public TileComposition getTileComposition(int gameId, int i) {
+    public TileComposition getTileComposition(int gameId, int location) {
         if (tileCompositions.size() == 0 || gameId != this.gameId) {
             createTileCompositions(gameId);
         }
-        return tileCompositions.get(i);
+        for (TileComposition tileComposition : tileCompositions) {
+            if (tileComposition.getTile().getLocation() == location) {
+                return tileComposition;
+            }
+        }
+        throw new RuntimeException("No tile composition found for location " + location);
     }
 
     private void createTileCompositions(int gameId) {
         this.gameId = gameId;
-        
+
         Game game = gameRepository.findById(gameId).get();
         List<Tile> tiles = tileRepository.findAllByGame(game);
         tileCompositions = new ArrayList<>();
@@ -57,6 +62,7 @@ public class TileService {
 
     public List<TileDTO> createAndGetTiles(Game game) {
         this.gameId = game.getId();
+        tileCompositions = new ArrayList<>();
 
         List<Property> properties = createAndGetAllProperties();
         HashSet<Integer> usedLocations = new HashSet<>();

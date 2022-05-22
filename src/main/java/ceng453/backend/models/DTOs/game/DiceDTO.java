@@ -1,6 +1,7 @@
 package ceng453.backend.models.DTOs.game;
 
 import ceng453.backend.models.enums.ActionType;
+import ceng453.backend.services.game.TileService;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -36,6 +37,6 @@ public class DiceDTO {
     }
 
     public int getNewLocation(int location) {
-        return (dice1 + dice2 + location) % 16;
+        return (dice1 + dice2 + location) % TileService.TILE_COUNT;
     }
 }
