@@ -86,14 +86,6 @@ public class GameService implements IGameService {
         return new GameResponse(true, "Game is created.", gameDTO).prepareResponse(HttpStatus.OK);
     }
 
-    private Integer getIntegerNotUsed(HashSet<Integer> usedNumbers, Integer limit) {
-        while (true) {
-            int randomNumber = (int) (Math.random() * limit);
-            if (!usedNumbers.contains(randomNumber)) {
-                return randomNumber;
-            }
-        }
-    }
 
     public List<TileDTO> createAndGetTiles(Game game) {
         List<Property> properties = createAndGetAllProperties();
@@ -108,7 +100,7 @@ public class GameService implements IGameService {
         tileCompositions.add(new GoToJailTile(game));
         tileCompositions.add(new JustVisitingTile(game));
 
-        int randomLocation = getIntegerNotUsed(usedLocations, TILE_COUNT);
+        int randomLocation = helper.getIntegerNotUsed(usedLocations, TILE_COUNT);
 
         usedLocations.add(randomLocation);
         tileCompositions.add(new IncomeTaxTile(game, randomLocation));
@@ -116,7 +108,7 @@ public class GameService implements IGameService {
         int propertyIndex = 0;
 
         while (tileCompositions.size() < 8) {
-            randomLocation = getIntegerNotUsed(usedLocations, TILE_COUNT);
+            randomLocation = helper.getIntegerNotUsed(usedLocations, TILE_COUNT);
             usedLocations.add(randomLocation);
 
             Property property = properties.get(propertyIndex++);
@@ -189,7 +181,6 @@ public class GameService implements IGameService {
         }
 
         Game game = gameRepository.findById(gameId).orElse(null);
-
         if (game == null) // game id check
             return new DiceResponse(false, "Game id not found", null)
                     .prepareResponse(HttpStatus.NOT_FOUND);
@@ -201,10 +192,22 @@ public class GameService implements IGameService {
         DiceDTO dice = new DiceDTO(gameId);
         dice.rollDice();
 
+        User user = userRepository.findByUsername(username);
+        Player player = playerRepository.findByUserAndGame(user, game);
+
+
         if (dice.getDice1() != dice.getDice2()) {
             game.setTurnOrder((game.getTurnOrder() + 1) % game.getPlayerCount());
+            game.setRepeatedDiceCount(0);
+            gameRepository.save(game);
+        } else {
+            game.setRepeatedDiceCount(game.getRepeatedDiceCount() + 1);
+            if (game.getRepeatedDiceCount() == 3) { // if it reaches the count of 3 repeated roll, sent him to the jail
+                player.setJailDuration(3);
+                playerRepository.save(player);
+            }
         }
-
+        dice.setValidActions(validator.getValidActions(player));
         return new DiceResponse(
                 true,
                 "Successfully rolled a dice",
