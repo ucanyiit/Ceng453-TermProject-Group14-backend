@@ -1,5 +1,6 @@
 package ceng453.backend.services.game;
 
+import ceng453.backend.models.enums.ActionType;
 import ceng453.backend.models.enums.GameType;
 import ceng453.backend.models.responses.BaseResponse;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,10 @@ public interface IGameService {
     ResponseEntity<BaseResponse> createGame(GameType gameType, String token, Integer playerCount);
 
     ResponseEntity<BaseResponse> rollDice(int gameId, String token);
+
+    ResponseEntity<BaseResponse> takeAction(int gameId, ActionType actionType, String token);
+
+    ResponseEntity<BaseResponse> buyProperty(int gameId, int location, String token);
 
     ResponseEntity<BaseResponse> endTurn(int gameId, String token);
 

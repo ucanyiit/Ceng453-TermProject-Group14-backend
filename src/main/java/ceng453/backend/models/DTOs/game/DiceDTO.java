@@ -1,17 +1,14 @@
 package ceng453.backend.models.DTOs.game;
 
-import ceng453.backend.models.enums.GameType;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 
-import java.util.List;
 import java.util.Random;
 
 @Getter
 public class DiceDTO {
     @ApiModelProperty(notes = "Game ID")
     private int gameId;
-
 
     @ApiModelProperty(notes = "The first value of a dice", allowableValues = "[1,2,3,4,5,6]")
     private int dice1;
