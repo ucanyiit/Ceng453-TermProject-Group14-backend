@@ -5,7 +5,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
 import java.util.Random;
 
 @Getter
@@ -13,7 +12,6 @@ import java.util.Random;
 public class DiceDTO {
     @ApiModelProperty(notes = "Game ID")
     private int gameId;
-
 
     @ApiModelProperty(notes = "The first value of a dice", allowableValues = "[1,2,3,4,5,6]")
     private int dice1;

@@ -5,12 +5,12 @@ import ceng453.backend.models.DTOs.game.GameDTO;
 import ceng453.backend.models.DTOs.game.PlayerDTO;
 import ceng453.backend.models.DTOs.game.TileDTO;
 import ceng453.backend.models.database.*;
+import ceng453.backend.models.enums.ActionType;
 import ceng453.backend.models.enums.GameType;
 import ceng453.backend.models.enums.TileType;
 import ceng453.backend.models.responses.BaseResponse;
 import ceng453.backend.models.responses.game.DiceResponse;
 import ceng453.backend.models.responses.game.GameResponse;
-import ceng453.backend.models.responses.game.TurnResponse;
 import ceng453.backend.models.tiles.*;
 import ceng453.backend.repositories.*;
 import ceng453.backend.services.helper.IHelper;
@@ -216,26 +216,36 @@ public class GameService implements IGameService {
     }
 
     @Override
+    public ResponseEntity<BaseResponse> takeAction(int gameId, ActionType actionType, String token) {
+        return new BaseResponse(false, "Not implemented yet").prepareResponse(HttpStatus.NOT_IMPLEMENTED);
+    }
+
+    @Override
+    public ResponseEntity<BaseResponse> buyProperty(int gameId, int location, String token) {
+        return new BaseResponse(false, "Not implemented yet").prepareResponse(HttpStatus.NOT_IMPLEMENTED);
+    }
+
+    @Override
     public ResponseEntity<BaseResponse> endTurn(int gameId, String token) {
         String username;
         try {
             username = helper.getUsernameFromToken(token);
         } catch (JSONException e) {
             e.printStackTrace();
-            return new TurnResponse(false, "Authentication failed.", null).prepareResponse(HttpStatus.UNAUTHORIZED);
+            return new BaseResponse(false, "Authentication failed.").prepareResponse(HttpStatus.UNAUTHORIZED);
         }
 
         Game game = gameRepository.findById(gameId).orElse(null);
 
         if (game == null) // game id check
-            return new TurnResponse(false, "Game id not found", null)
+            return new BaseResponse(false, "Game id not found")
                     .prepareResponse(HttpStatus.NOT_FOUND);
 
         if (validator.isPlayersTurn(game, username))
-            return new TurnResponse(false, "The turn is not the player's", null)
+            return new BaseResponse(false, "The turn is not the player's")
                     .prepareResponse(HttpStatus.FORBIDDEN);
 
-        return new TurnResponse(true, "The turn is over", null)
+        return new BaseResponse(true, "The turn is over")
                 .prepareResponse(HttpStatus.OK);
     }
 
@@ -252,6 +262,10 @@ public class GameService implements IGameService {
         Game game = gameRepository.findById(gameId).orElse(null);
         User user = userRepository.findByUsername(username);
         Player player = playerRepository.findByUserAndGame(user, game);
+
+        if (game == null || user == null || player == null) { // game id check
+            return new BaseResponse(false, "Game id, player or user not found").prepareResponse(HttpStatus.NOT_FOUND);
+        }
 
         game.setEndDate(LocalDateTime.now());
         gameRepository.save(game);

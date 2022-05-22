@@ -1,6 +1,8 @@
 package ceng453.backend.api.game;
 
+import ceng453.backend.models.DTOs.game.BuyPropertyDTO;
 import ceng453.backend.models.DTOs.game.StartGameDTO;
+import ceng453.backend.models.DTOs.game.TakeActionDTO;
 import ceng453.backend.services.game.IGameService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -46,6 +48,35 @@ public class GameController {
         return gameService.rollDice(gameId, token);
     }
 
+    /**
+     * This method used to take an action in a game
+     *
+     * @param takeActionDTO: The TakeActionDTO object.
+     * @return A response with the game details
+     */
+    @ApiOperation(
+            value = "Take an action in a game",
+            notes = "Take an action in a game with the given action type",
+            response = ResponseEntity.class
+    )
+    @PostMapping(path = "/take-action", produces = "application/json")
+    public Object takeAction(@RequestBody TakeActionDTO takeActionDTO, @RequestHeader("Authorization") String token) {
+        return gameService.takeAction(takeActionDTO.getGameId(), takeActionDTO.getActionType(), token);
+    }
+
+    /**
+     * This method used to buy a property
+     *
+     * @return A response with the game details
+     */
+    @ApiOperation(
+            value = "Buy a property",
+            response = ResponseEntity.class
+    )
+    @PostMapping(path = "/buy-property", produces = "application/json")
+    public Object buyProperty(@RequestBody BuyPropertyDTO buyPropertyDTO, @RequestHeader("Authorization") String token) {
+        return gameService.buyProperty(buyPropertyDTO.getGameId(), buyPropertyDTO.getLocation(), token);
+    }
 
     /**
      * This method used by the players to end the current turn

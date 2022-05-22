@@ -1,20 +1,17 @@
 package ceng453.backend.models.DTOs.game;
 
-import ceng453.backend.models.enums.GameType;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 
-import java.util.List;
-import java.util.Random;
-
 @Getter
-public class TurnDTO {
+public class BuyPropertyDTO {
     @ApiModelProperty(notes = "Game ID")
     private int gameId;
+    @ApiModelProperty(notes = "Propery Location")
+    private int location;
 
-    public TurnDTO(int gameId) {
+    public BuyPropertyDTO(int gameId, int location) {
         this.gameId = gameId;
+        this.location = location;
     }
-
-
 }
