@@ -13,6 +13,7 @@ import ceng453.backend.models.responses.game.DiceResponse;
 import ceng453.backend.models.responses.game.GameResponse;
 import ceng453.backend.models.tiles.*;
 import ceng453.backend.repositories.*;
+import ceng453.backend.services.bot.BotService;
 import ceng453.backend.services.helper.IHelper;
 import ceng453.backend.services.validator.IValidator;
 import org.json.JSONException;
@@ -185,7 +186,7 @@ public class GameService implements IGameService {
             return new DiceResponse(false, "Game id not found", null)
                     .prepareResponse(HttpStatus.NOT_FOUND);
 
-        if (validator.isPlayersTurn(game, username))
+        if (!validator.isPlayersTurn(game, username))
             return new DiceResponse(false, "The turn is not the player's", null)
                     .prepareResponse(HttpStatus.FORBIDDEN);
 
@@ -207,7 +208,7 @@ public class GameService implements IGameService {
                 playerRepository.save(player);
             }
         }
-        dice.setValidActions(validator.getValidActions(player));
+        dice.setValidActions(validator.getValidActions(player, game));
         return new DiceResponse(
                 true,
                 "Successfully rolled a dice",
@@ -241,13 +242,17 @@ public class GameService implements IGameService {
             return new BaseResponse(false, "Game id not found")
                     .prepareResponse(HttpStatus.NOT_FOUND);
 
-        if (validator.isPlayersTurn(game, username))
+        if (!validator.isPlayersTurn(game, username))
             return new BaseResponse(false, "The turn is not the player's")
                     .prepareResponse(HttpStatus.FORBIDDEN);
 
+        if (game.getType().equals("SINGLEPLAYER")) {
+            BotService.rollDice(gameRepository, playerRepository, game, validator);
+        }
         return new BaseResponse(true, "The turn is over")
                 .prepareResponse(HttpStatus.OK);
     }
+
 
     @Override
     public ResponseEntity<BaseResponse> resign(int gameId, String token) {
