@@ -4,15 +4,28 @@ import ceng453.backend.models.DTOs.game.DiceDTO;
 import ceng453.backend.models.actions.Action;
 import ceng453.backend.models.database.Game;
 import ceng453.backend.models.database.Player;
+import ceng453.backend.models.tiles.TileComposition;
 import ceng453.backend.repositories.GameRepository;
 import ceng453.backend.repositories.PlayerRepository;
+import ceng453.backend.services.game.TileService;
 import ceng453.backend.services.validator.IValidator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class BotService {
 
-    static public List<Action> rollDice(GameRepository gameRepository, PlayerRepository playerRepository, Game game, IValidator validator) {
+    @Autowired
+    GameRepository gameRepository;
+    @Autowired
+    PlayerRepository playerRepository;
+    @Autowired
+    IValidator validator;
+    TileService tileService;
+
+    public List<Action> rollDice(Game game) {
         DiceDTO dice = new DiceDTO(game.getId());
         dice.rollDice();
         Player bot = game.getPlayersIn().get(1);
@@ -27,7 +40,8 @@ public class BotService {
                 playerRepository.save(bot);
             }
         }
-        dice.setActions(validator.getValidActions(bot, game));
+        TileComposition tileComposition = tileService.getTileComposition(game.getId(), dice.getNewLocation(bot.getLocation()));
+        dice.setActions(validator.getValidActions(tileComposition));
         return null;
     }
 

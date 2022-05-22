@@ -34,4 +34,8 @@ public class DiceDTO {
         this.dice1 = random.nextInt(6) + 1;
         this.dice2 = random.nextInt(6) + 1;
     }
+
+    public int getNewLocation(int location) {
+        return (dice1 + dice2 + location) % 16;
+    }
 }

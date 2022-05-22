@@ -3,7 +3,6 @@ package ceng453.backend.services.validator;
 import ceng453.backend.models.actions.Action;
 import ceng453.backend.models.database.Game;
 import ceng453.backend.models.database.Player;
-import ceng453.backend.models.database.Tile;
 import ceng453.backend.models.database.User;
 import ceng453.backend.models.enums.ActionType;
 import ceng453.backend.models.tiles.TileComposition;
@@ -38,10 +37,7 @@ public class Validator implements IValidator {
                 .equals(username);
     }
 
-    public List<ActionType> getValidActions(Player player, Game game) {
-        Integer location = player.getLocation();
-        Tile tile = tileRepository.findByLocationAndGame(location, game);
-        TileComposition tempTileComposition = new TileComposition(tile.getProperty(), tile.getGame(), tile.getOwner(), tile.getLocation(), tile.getPrice());
-        return tempTileComposition.onLand(player).stream().map(Action::getActionType).collect(Collectors.toList());
+    public List<ActionType> getValidActions(TileComposition tileComposition) {
+        return tileComposition.onLand(null).stream().map(Action::getActionType).collect(Collectors.toList());
     }
 }

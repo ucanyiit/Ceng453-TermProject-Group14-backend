@@ -30,6 +30,6 @@ public class BuyAction extends BaseAction {
 
     @Override
     public ActionType getActionType() {
-        return ActionType.NO_ACTION;
+        return ActionType.BUY;
     }
 }

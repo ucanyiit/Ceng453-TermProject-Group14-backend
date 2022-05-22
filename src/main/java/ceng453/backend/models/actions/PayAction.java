@@ -27,6 +27,6 @@ public class PayAction extends BaseAction {
 
     @Override
     public ActionType getActionType() {
-        return ActionType.NO_ACTION;
+        return ActionType.PAY;
     }
 }

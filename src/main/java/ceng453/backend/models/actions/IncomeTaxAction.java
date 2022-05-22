@@ -17,6 +17,6 @@ public class IncomeTaxAction extends BaseAction {
 
     @Override
     public ActionType getActionType() {
-        return ActionType.PAY_TAX;
+        return ActionType.INCOME_TAX;
     }
 }
