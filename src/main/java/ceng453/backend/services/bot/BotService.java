@@ -1,18 +1,18 @@
 package ceng453.backend.services.bot;
 
-import ceng453.backend.models.Action;
 import ceng453.backend.models.DTOs.game.DiceDTO;
+import ceng453.backend.models.actions.Action;
 import ceng453.backend.models.database.Game;
 import ceng453.backend.models.database.Player;
 import ceng453.backend.repositories.GameRepository;
-import ceng453.backend.repositories.PlayerGameRepository;
+import ceng453.backend.repositories.PlayerRepository;
 import ceng453.backend.services.validator.IValidator;
 
 import java.util.List;
 
 public class BotService {
 
-    static public List<Action> rollDice(GameRepository gameRepository, PlayerGameRepository playerRepository, Game game, IValidator validator) {
+    static public List<Action> rollDice(GameRepository gameRepository, PlayerRepository playerRepository, Game game, IValidator validator) {
         DiceDTO dice = new DiceDTO(game.getId());
         dice.rollDice();
         Player bot = game.getPlayersIn().get(1);
@@ -27,7 +27,7 @@ public class BotService {
                 playerRepository.save(bot);
             }
         }
-        dice.setValidActions(validator.getValidActions(bot, game));
+        dice.setActions(validator.getValidActions(bot, game));
         return null;
     }
 

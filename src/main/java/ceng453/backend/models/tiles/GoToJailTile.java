@@ -1,10 +1,10 @@
 package ceng453.backend.models.tiles;
 
-import ceng453.backend.models.Action;
+import ceng453.backend.models.actions.Action;
+import ceng453.backend.models.actions.GoToJailAction;
 import ceng453.backend.models.database.Game;
 import ceng453.backend.models.database.Player;
 import ceng453.backend.models.database.Property;
-import ceng453.backend.models.enums.ActionType;
 import ceng453.backend.models.enums.TileType;
 
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ public class GoToJailTile extends TileComposition {
 
     public List<Action> onLand(Player player) {
         List<Action> actions = new ArrayList();
-        actions.add(new Action(ActionType.GO_TO_JAIL, 0, player, 0));
+        actions.add(new GoToJailAction(player));
 
         return actions;
     }

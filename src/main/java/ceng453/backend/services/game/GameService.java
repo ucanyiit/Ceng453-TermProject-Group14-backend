@@ -39,7 +39,7 @@ public class GameService implements IGameService {
     @Autowired
     private GameRepository gameRepository;
     @Autowired
-    private PlayerGameRepository playerRepository;
+    private PlayerRepository playerRepository;
     @Autowired
     private ScoreRepository scoreRepository;
     @Autowired
@@ -190,12 +190,15 @@ public class GameService implements IGameService {
             return new DiceResponse(false, "The turn is not the player's", null)
                     .prepareResponse(HttpStatus.FORBIDDEN);
 
-        DiceDTO dice = new DiceDTO(gameId);
-        dice.rollDice();
 
         User user = userRepository.findByUsername(username);
         Player player = playerRepository.findByUserAndGame(user, game);
 
+        DiceDTO dice = new DiceDTO(gameId);
+        dice.rollDice();
+        // TODO: If the player is in jail:
+        // TODO: If dices are the same: exit jail
+        // TODO: If not: reduce jail time by 1
 
         if (dice.getDice1() != dice.getDice2()) {
             game.setTurnOrder((game.getTurnOrder() + 1) % game.getPlayerCount());
@@ -208,7 +211,8 @@ public class GameService implements IGameService {
                 playerRepository.save(player);
             }
         }
-        dice.setValidActions(validator.getValidActions(player, game));
+
+        dice.setActions(validator.getValidActions(player, game));
         return new DiceResponse(
                 true,
                 "Successfully rolled a dice",
@@ -246,9 +250,10 @@ public class GameService implements IGameService {
             return new BaseResponse(false, "The turn is not the player's")
                     .prepareResponse(HttpStatus.FORBIDDEN);
 
-        if (game.getType().equals("SINGLEPLAYER")) {
+        if (game.getType().equals(GameType.SINGLEPLAYER)) {
             BotService.rollDice(gameRepository, playerRepository, game, validator);
         }
+
         return new BaseResponse(true, "The turn is over")
                 .prepareResponse(HttpStatus.OK);
     }

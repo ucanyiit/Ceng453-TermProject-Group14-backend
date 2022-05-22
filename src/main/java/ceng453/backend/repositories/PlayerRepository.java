@@ -5,6 +5,6 @@ import ceng453.backend.models.database.Player;
 import ceng453.backend.models.database.User;
 import org.springframework.data.repository.CrudRepository;
 
-public interface PlayerGameRepository extends CrudRepository<Player, Integer> {
+public interface PlayerRepository extends CrudRepository<Player, Integer> {
     Player findByUserAndGame(User user, Game game);
 }

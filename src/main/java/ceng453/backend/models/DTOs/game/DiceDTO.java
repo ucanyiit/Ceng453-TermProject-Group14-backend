@@ -1,6 +1,6 @@
 package ceng453.backend.models.DTOs.game;
 
-import ceng453.backend.models.Action;
+import ceng453.backend.models.enums.ActionType;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,8 +20,8 @@ public class DiceDTO {
     @ApiModelProperty(notes = "The second value of a dice", allowableValues = "[1,2,3,4,5,6]")
     private int dice2;
 
-    @ApiModelProperty(notes = "The valid actions that Player can take")
-    private List<Action> validActions;
+    @ApiModelProperty(notes = "The actions user can take")
+    private List<ActionType> actions;
 
     public DiceDTO(int gameId) {
         this.gameId = gameId;
