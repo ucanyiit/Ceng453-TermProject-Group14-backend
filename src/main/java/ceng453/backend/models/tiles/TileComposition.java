@@ -1,6 +1,10 @@
 package ceng453.backend.models.tiles;
 
-import ceng453.backend.models.database.*;
+import ceng453.backend.models.Action;
+import ceng453.backend.models.database.Game;
+import ceng453.backend.models.database.Player;
+import ceng453.backend.models.database.Property;
+import ceng453.backend.models.database.Tile;
 import ceng453.backend.models.enums.ActionType;
 import lombok.Getter;
 
