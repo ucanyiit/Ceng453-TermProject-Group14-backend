@@ -21,17 +21,20 @@ public class Validator implements IValidator {
 
     @Override
     public boolean isPlayersTurn(Game game, String username) {
-        return !game // if the turn is not the player's, return false
-                .getPlayersIn()
+        List<Player> activePlayers = game.getPlayersIn();
+        if (activePlayers.size() == 0)
+            return false;
+
+        return activePlayers
                 .get(game.getTurnOrder())
                 .getUser()
                 .getUsername()
                 .equals(username);
     }
 
-    public List<Action> getValidActions(Player player) {
+    public List<Action> getValidActions(Player player, Game game) {
         Integer location = player.getLocation();
-        Tile tile = tileRepository.findByPlayer(player);
+        Tile tile = tileRepository.findByLocationAndGame(location, game);
         TileComposition tempTileComposition = new TileComposition(tile.getProperty(), tile.getGame(), tile.getOwner(), tile.getLocation(), tile.getPrice());
         return tempTileComposition.onLand(player);
     }

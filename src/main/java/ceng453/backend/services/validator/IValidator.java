@@ -9,5 +9,5 @@ import java.util.List;
 public interface IValidator {
     boolean isPlayersTurn(Game game, String username);
 
-    List<Action> getValidActions(Player player);
+    List<Action> getValidActions(Player player, Game game);
 }
