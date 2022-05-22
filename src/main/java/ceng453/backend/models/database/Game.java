@@ -30,6 +30,8 @@ public class Game {
     private Integer turnOrder = 0;
     @Enumerated(EnumType.STRING)
     private GameType type;
+    @ColumnDefault(value = "0")
+    private Integer repeatedDiceCount = 0;
 
     @OneToMany(mappedBy = "game", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Score> scores = new ArrayList<>();
