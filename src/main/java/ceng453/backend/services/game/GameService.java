@@ -54,7 +54,7 @@ public class GameService implements IGameService {
 
     @Override
     public ResponseEntity<BaseResponse> createGame(GameType gameType, String token, Integer playerCount) {
-        String username = null;
+        String username;
         try {
             username = helper.getUsernameFromToken(token);
         } catch (JSONException e) {
@@ -180,7 +180,7 @@ public class GameService implements IGameService {
     }
 
     public ResponseEntity<BaseResponse> rollDice(int gameId, String token) {
-        String username = null;
+        String username;
         try {
             username = helper.getUsernameFromToken(token);
         } catch (JSONException e) {
@@ -200,6 +200,11 @@ public class GameService implements IGameService {
 
         DiceDTO dice = new DiceDTO(gameId);
         dice.rollDice();
+
+        if (dice.getDice1() != dice.getDice2()) {
+            game.setTurnOrder((game.getTurnOrder() + 1) % game.getPlayerCount());
+        }
+
         return new DiceResponse(
                 true,
                 "Successfully rolled a dice",
@@ -209,7 +214,7 @@ public class GameService implements IGameService {
 
     @Override
     public ResponseEntity<BaseResponse> endTurn(int gameId, String token) {
-        String username = null;
+        String username;
         try {
             username = helper.getUsernameFromToken(token);
         } catch (JSONException e) {
@@ -233,7 +238,7 @@ public class GameService implements IGameService {
 
     @Override
     public ResponseEntity<BaseResponse> resign(int gameId, String token) {
-        String username = null;
+        String username;
         try {
             username = helper.getUsernameFromToken(token);
         } catch (JSONException e) {
