@@ -27,12 +27,10 @@ public class Player {
     private Integer money;
     @ColumnDefault(value = "0")
     private Integer jailDuration;
-    @OneToMany(mappedBy = "player", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Move> moves = new ArrayList<>();
+    @ColumnDefault(value = "0")
+    private Integer location = 0;
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Tile> properties = new ArrayList<>();
-    @OneToMany(mappedBy = "receiverPlayer", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Action> receivedActions = new ArrayList<>();
 
     public Player() {
     }

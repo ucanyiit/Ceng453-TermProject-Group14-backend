@@ -37,8 +37,6 @@ public class Game {
     private List<Score> scores = new ArrayList<>();
     @OneToMany(mappedBy = "game", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Player> playersIn = new ArrayList<>();
-    @OneToMany(mappedBy = "game", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Move> movesIn = new ArrayList<>();
 
     public Game() {
 

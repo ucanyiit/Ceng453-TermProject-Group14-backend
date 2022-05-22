@@ -1,6 +1,6 @@
 package ceng453.backend.models.tiles;
 
-import ceng453.backend.models.database.Action;
+import ceng453.backend.models.Action;
 import ceng453.backend.models.database.Game;
 import ceng453.backend.models.database.Player;
 import ceng453.backend.models.database.Property;
