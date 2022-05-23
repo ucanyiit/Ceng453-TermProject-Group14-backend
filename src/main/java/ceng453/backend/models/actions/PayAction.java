@@ -2,6 +2,8 @@ package ceng453.backend.models.actions;
 
 import ceng453.backend.models.database.Player;
 import ceng453.backend.models.enums.ActionType;
+import ceng453.backend.repositories.PlayerRepository;
+import ceng453.backend.repositories.TileRepository;
 
 public class PayAction extends BaseAction {
 
@@ -15,7 +17,7 @@ public class PayAction extends BaseAction {
     }
 
     @Override
-    public void execute() {
+    public void execute(TileRepository tileRepository, PlayerRepository playerRepository) {
         if (player.getMoney() < amount) {
             throw new IllegalArgumentException("Not enough money to pay the owner");
         }

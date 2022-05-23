@@ -3,6 +3,8 @@ package ceng453.backend.models.actions;
 import ceng453.backend.models.database.Player;
 import ceng453.backend.models.enums.ActionType;
 import ceng453.backend.models.tiles.JustVisitingTile;
+import ceng453.backend.repositories.PlayerRepository;
+import ceng453.backend.repositories.TileRepository;
 
 public class GoToJailAction extends BaseAction {
 
@@ -11,7 +13,7 @@ public class GoToJailAction extends BaseAction {
     }
 
     @Override
-    public void execute() {
+    public void execute(TileRepository tileRepository, PlayerRepository playerRepository) {
         player.setJailDuration(3);
         player.setLocation(JustVisitingTile.LOCATION);
         playerRepository.save(player);
