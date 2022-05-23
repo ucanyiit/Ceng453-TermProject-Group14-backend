@@ -193,7 +193,6 @@ public class GameService implements IGameService {
         List<Action> actions = tileComposition.onLand(player);
 
         for (Action action : actions) {
-            System.out.println("Action: " + action.getActionType() + "   " + actionType);
             if (action.getActionType().equals(actionType)) {
                 action.execute(tileRepository, playerRepository);
 
