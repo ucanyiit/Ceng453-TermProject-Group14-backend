@@ -1,6 +1,5 @@
 package ceng453.backend.services.game;
 
-import ceng453.backend.models.DTOs.game.TileDTO;
 import ceng453.backend.models.database.Game;
 import ceng453.backend.models.database.Property;
 import ceng453.backend.models.database.Tile;
@@ -60,7 +59,7 @@ public class TileService {
         }
     }
 
-    public List<TileDTO> createAndGetTiles(Game game) {
+    public void createTiles(Game game) {
         this.gameId = game.getId();
         tileCompositions = new ArrayList<>();
 
@@ -103,14 +102,7 @@ public class TileService {
             usedLocations.add(location++);
         }
 
-        for (TileComposition tileComposition : tileCompositions) {
-            tileRepository.save(tileComposition.getTile());
-        }
-
-        return tileCompositions
-                .stream()
-                .map(tileComposition -> new TileDTO(tileComposition.getTile()))
-                .collect(Collectors.toList());
+        tileRepository.saveAll(tileCompositions.stream().map(TileComposition::getTile).collect(Collectors.toList()));
     }
 
     private List<Property> createAndGetAllProperties() {

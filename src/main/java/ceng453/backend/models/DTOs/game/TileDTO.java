@@ -19,11 +19,15 @@ public class TileDTO {
     @ApiModelProperty(value = "The type of the property.", allowableValues = "JAIL, INCOME_TAX, PUBLIC_PROPERTY, PRIVATE_PROPERTY, VISITING_SPACE, STARTING_POINT", required = true)
     private TileType propertyType;
 
-    public TileDTO(String name, Integer location, Integer price, TileType propertyType) {
+    @ApiModelProperty(value = "The name of the owner of the property.", example = "bahadir")
+    private String owner;
+
+    public TileDTO(String name, Integer location, Integer price, TileType propertyType, String owner) {
         this.name = name;
         this.location = location;
         this.price = price;
         this.propertyType = propertyType;
+        this.owner = owner;
     }
 
     public TileDTO(Tile tile) {
@@ -31,5 +35,6 @@ public class TileDTO {
         this.location = tile.getLocation();
         this.price = tile.getPrice();
         this.propertyType = tile.getProperty().getType();
+        this.owner = tile.getOwner() == null ? "" : tile.getOwner().getUser().getUsername();
     }
 }

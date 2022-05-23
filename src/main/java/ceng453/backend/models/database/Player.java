@@ -26,7 +26,7 @@ public class Player {
     @ColumnDefault(value = "1500")
     private Integer money;
     @ColumnDefault(value = "0")
-    private Integer jailDuration;
+    private Integer jailDuration = 0;
     @ColumnDefault(value = "0")
     private Integer location = 0;
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

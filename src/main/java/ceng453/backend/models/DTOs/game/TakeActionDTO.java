@@ -11,5 +11,5 @@ public class TakeActionDTO {
     @ApiModelProperty(value = "Game ID")
     private int gameId;
     @ApiModelProperty(value = "Action Type", allowableValues = "GO_TO_JAIL, BUY, SELL, NO_ACTION, PAY_TAX, CHEAT")
-    private ActionType actionType;
+    private ActionType action;
 }

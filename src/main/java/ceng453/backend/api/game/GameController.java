@@ -61,7 +61,7 @@ public class GameController {
     )
     @PostMapping(path = "/take-action", produces = "application/json")
     public Object takeAction(@RequestBody TakeActionDTO takeActionDTO, @RequestHeader("Authorization") String token) {
-        return gameService.takeAction(takeActionDTO.getGameId(), takeActionDTO.getActionType(), token);
+        return gameService.takeAction(takeActionDTO.getGameId(), takeActionDTO.getAction(), token);
     }
 
     /**

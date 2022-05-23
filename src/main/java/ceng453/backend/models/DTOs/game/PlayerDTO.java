@@ -34,12 +34,12 @@ public class PlayerDTO {
         this.location = location;
     }
 
-    public PlayerDTO(Player player, Integer location) {
+    public PlayerDTO(Player player) {
         this.isBot = player.getUser() == null;
         this.username = this.isBot ? "BOT" : player.getUser().getUsername();
         this.orderOfPlay = player.getOrderOfPlay();
         this.money = player.getMoney();
         this.jailDuration = player.getJailDuration();
-        this.location = location;
+        this.location = player.getLocation();
     }
 }

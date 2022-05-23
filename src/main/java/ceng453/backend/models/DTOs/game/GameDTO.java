@@ -16,11 +16,14 @@ public class GameDTO {
     private int gameId;
     @ApiModelProperty(value = "The type of the game.", allowableValues = "SINGLEPLAYER, MULTIPLAYER")
     private GameType type;
+    @ApiModelProperty(notes = "The current turn of the game.")
+    private int turn;
 
-    public GameDTO(int gameId, GameType type, List<TileDTO> tiles, List<PlayerDTO> players) {
+    public GameDTO(int gameId, GameType type, List<TileDTO> tiles, List<PlayerDTO> players, int turn) {
         this.gameId = gameId;
         this.type = type;
         this.tiles = tiles;
         this.players = players;
+        this.turn = turn;
     }
 }

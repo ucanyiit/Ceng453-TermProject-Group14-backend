@@ -3,20 +3,17 @@ package ceng453.backend.services.game;
 import ceng453.backend.models.DTOs.game.DiceDTO;
 import ceng453.backend.models.DTOs.game.GameDTO;
 import ceng453.backend.models.DTOs.game.PlayerDTO;
-import ceng453.backend.models.database.Game;
-import ceng453.backend.models.database.Player;
-import ceng453.backend.models.database.Score;
-import ceng453.backend.models.database.User;
+import ceng453.backend.models.DTOs.game.TileDTO;
+import ceng453.backend.models.actions.Action;
+import ceng453.backend.models.database.*;
 import ceng453.backend.models.enums.ActionType;
 import ceng453.backend.models.enums.GameType;
 import ceng453.backend.models.responses.BaseResponse;
 import ceng453.backend.models.responses.game.DiceResponse;
 import ceng453.backend.models.responses.game.GameResponse;
+import ceng453.backend.models.tiles.GoToJailTile;
 import ceng453.backend.models.tiles.TileComposition;
-import ceng453.backend.repositories.GameRepository;
-import ceng453.backend.repositories.PlayerRepository;
-import ceng453.backend.repositories.ScoreRepository;
-import ceng453.backend.repositories.UserRepository;
+import ceng453.backend.repositories.*;
 import ceng453.backend.services.bot.BotService;
 import ceng453.backend.services.helper.IHelper;
 import ceng453.backend.services.validator.IValidator;
@@ -48,9 +45,24 @@ public class GameService implements IGameService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
+    private TileRepository tileRepository;
+    @Autowired
     private IHelper helper;
     @Autowired
     private IValidator validator;
+
+    private GameDTO getGameDTO(Game game) {
+        List<Player> players = playerRepository.findAllByGame(game);
+        List<Tile> tiles = tileRepository.findAllByGame(game);
+
+        return new GameDTO(
+                game.getId(),
+                game.getType(),
+                tiles.stream().map(TileDTO::new).collect(Collectors.toList()),
+                players.stream().map(PlayerDTO::new).collect(Collectors.toList()),
+                game.getTurnOrder()
+        );
+    }
 
     @Override
     public ResponseEntity<BaseResponse> createGame(GameType gameType, String token, Integer playerCount) {
@@ -69,21 +81,15 @@ public class GameService implements IGameService {
 
         if (gameType == GameType.SINGLEPLAYER) {
             for (int i = 1; i < playerCount; i++) {
-                players.add(new Player(null, game, 1));
+                players.add(new Player(botService.getBotUser(i), game, i));
             }
         }
 
         gameRepository.save(game);
         playerRepository.saveAll(players);
+        tileService.createTiles(game);
 
-        GameDTO gameDTO = new GameDTO(
-                game.getId(),
-                game.getType(),
-                tileService.createAndGetTiles(game),
-                players.stream().map(p -> new PlayerDTO(p, 0)).collect(Collectors.toList())
-        );
-
-        return new GameResponse(true, "Game is created.", gameDTO).prepareResponse(HttpStatus.OK);
+        return new GameResponse(true, "Game is created.", getGameDTO(game)).prepareResponse(HttpStatus.OK);
     }
 
     public ResponseEntity<BaseResponse> rollDice(int gameId, String token) {
@@ -96,6 +102,7 @@ public class GameService implements IGameService {
         }
 
         Game game = gameRepository.findById(gameId).orElse(null);
+
         if (game == null) // game id check
             return new DiceResponse(false, "Game id not found", null)
                     .prepareResponse(HttpStatus.NOT_FOUND);
@@ -110,24 +117,47 @@ public class GameService implements IGameService {
 
         DiceDTO dice = new DiceDTO(gameId);
         dice.rollDice();
-        // TODO: If the player is in jail:
-        // TODO: If dices are the same: exit jail
-        // TODO: If not: reduce jail time by 1
 
-        if (dice.getDice1() != dice.getDice2()) {
-            game.setTurnOrder((game.getTurnOrder() + 1) % game.getPlayerCount());
-            game.setRepeatedDiceCount(0);
-            gameRepository.save(game);
-        } else {
-            game.setRepeatedDiceCount(game.getRepeatedDiceCount() + 1);
-            if (game.getRepeatedDiceCount() == 3) { // if it reaches the count of 3 repeated roll, sent him to the jail
-                player.setJailDuration(3);
-                playerRepository.save(player);
+        if (player.getJailDuration() > 0) {
+            if (dice.getDice1() == dice.getDice2()) {
+                player.setJailDuration(0);
+                game.incrementRepeatedDiceCount();
+            } else {
+                player.setJailDuration(player.getJailDuration() - 1);
+                game.setRepeatedDiceCount(0);
             }
+            playerRepository.save(player);
+
+            game.advanceTurn();
+            gameRepository.save(game);
+
+            TileComposition tileComposition = tileService.getTileComposition(game.getId(), player.getLocation());
+            dice.setActions(validator.getValidActions(tileComposition, player));
+
+            return new DiceResponse(
+                    true,
+                    "Successfully rolled a dice",
+                    dice
+            ).prepareResponse(HttpStatus.OK);
         }
 
         TileComposition tileComposition = tileService.getTileComposition(game.getId(), dice.getNewLocation(player.getLocation()));
-        dice.setActions(validator.getValidActions(tileComposition));
+
+        if (dice.getDice1() == dice.getDice2()) {
+            game.incrementRepeatedDiceCount();
+            gameRepository.save(game);
+            if (game.getRepeatedDiceCount() == 3) { // if it reaches the count of 3 repeated roll, sent him to the jail
+                tileComposition = tileService.getTileComposition(game.getId(), GoToJailTile.LOCATION);
+            }
+        } else {
+            game.setRepeatedDiceCount(0);
+            gameRepository.save(game);
+        }
+
+        player.setLocation(dice.getNewLocation(player.getLocation()));
+        playerRepository.save(player);
+
+        dice.setActions(validator.getValidActions(tileComposition, player));
 
         return new DiceResponse(
                 true,
@@ -138,7 +168,40 @@ public class GameService implements IGameService {
 
     @Override
     public ResponseEntity<BaseResponse> takeAction(int gameId, ActionType actionType, String token) {
-        return new BaseResponse(false, "Not implemented yet").prepareResponse(HttpStatus.NOT_IMPLEMENTED);
+        String username;
+        try {
+            username = helper.getUsernameFromToken(token);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return new BaseResponse(false, "Authentication failed.").prepareResponse(HttpStatus.UNAUTHORIZED);
+        }
+
+        Game game = gameRepository.findById(gameId).orElse(null);
+
+        if (game == null) // game id check
+            return new DiceResponse(false, "Game id not found", null)
+                    .prepareResponse(HttpStatus.NOT_FOUND);
+
+        if (!validator.isPlayersTurn(game, username))
+            return new DiceResponse(false, "The turn is not the player's", null)
+                    .prepareResponse(HttpStatus.FORBIDDEN);
+
+        User user = userRepository.findByUsername(username);
+        Player player = playerRepository.findByUserAndGame(user, game);
+
+        TileComposition tileComposition = tileService.getTileComposition(game.getId(), player.getLocation());
+        List<Action> actions = tileComposition.onLand(player);
+
+        for (Action action : actions) {
+            System.out.println("Action: " + action.getActionType() + "   " + actionType);
+            if (action.getActionType().equals(actionType)) {
+                action.execute(tileRepository, playerRepository);
+
+                return new GameResponse(true, "Action successfully executed", getGameDTO(game)).prepareResponse(HttpStatus.OK);
+            }
+        }
+
+        return new BaseResponse(false, "Action is not valid").prepareResponse(HttpStatus.BAD_REQUEST);
     }
 
     @Override
@@ -166,12 +229,20 @@ public class GameService implements IGameService {
             return new BaseResponse(false, "The turn is not the player's")
                     .prepareResponse(HttpStatus.FORBIDDEN);
 
-        if (game.getType().equals(GameType.SINGLEPLAYER)) {
-            botService.rollDice(game);
+        // If user has repeated dice rolls, they play again
+        if (game.getRepeatedDiceCount() != 0) {
+            return new GameResponse(true, "Turn is ended", getGameDTO(game)).prepareResponse(HttpStatus.OK);
         }
 
-        return new BaseResponse(true, "The turn is over")
-                .prepareResponse(HttpStatus.OK);
+        game.advanceTurn();
+        gameRepository.save(game);
+
+        // Play others' turns
+        if (game.getType().equals(GameType.SINGLEPLAYER)) {
+            botService.playTurn(game);
+        }
+
+        return new GameResponse(true, "Turn is ended", getGameDTO(game)).prepareResponse(HttpStatus.OK);
     }
 
 

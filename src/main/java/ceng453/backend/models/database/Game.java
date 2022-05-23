@@ -46,4 +46,13 @@ public class Game {
         this.playerCount = playerCount;
         this.type = type;
     }
+
+    public void advanceTurn() {
+        this.turn += 1;
+        this.turn %= this.playerCount;
+    }
+
+    public void incrementRepeatedDiceCount() {
+        this.repeatedDiceCount += 1;
+    }
 }
