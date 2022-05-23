@@ -21,7 +21,9 @@ public class PublicPropertyTile extends TileComposition {
     public List<Action> onLand(Player player) {
         List<Action> actions = new ArrayList();
         if (this.tile.getOwner() == null) {
-            actions.add(new BuyAction(player, this.tile));
+            if (player.getMoney() >= this.tile.getPrice()) {
+                actions.add(new BuyAction(player, this.tile));
+            }
             actions.add(new NoAction(player));
         } else {
             actions.add(new PayAction(player, this.tile.getOwner(), this.tile.getPrice() / 10));
