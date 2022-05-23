@@ -37,7 +37,7 @@ public class Validator implements IValidator {
                 .equals(username);
     }
 
-    public List<ActionType> getValidActions(TileComposition tileComposition) {
-        return tileComposition.onLand(null).stream().map(Action::getActionType).collect(Collectors.toList());
+    public List<ActionType> getValidActions(TileComposition tileComposition, Player player) {
+        return tileComposition.onLand(player).stream().map(Action::getActionType).collect(Collectors.toList());
     }
 }
