@@ -226,22 +226,25 @@ public class GameService implements IGameService {
             return new BaseResponse(false, "The turn is not the player's")
                     .prepareResponse(HttpStatus.FORBIDDEN);
 
+        EndTurnDTO response = new EndTurnDTO(gameId, null, null);
         // If user has repeated dice rolls, they play again
         if (game.getRepeatedDiceCount() != 0) {
-            return new GameResponse(true, "Turn is ended", getGameDTO(game)).prepareResponse(HttpStatus.OK);
+            response.setGame(getGameDTO(game));
+            return new EndTurnResponse(true, "Turn is ended", response).prepareResponse(HttpStatus.OK);
         }
 
         game.advanceTurn();
         gameRepository.save(game);
 
+        response.setGame(getGameDTO(game));
         // Play others' turns
         if (game.getType().equals(GameType.SINGLEPLAYER)) {
             List<BotActionDTO> botActions = botService.playTurn(game);
-            return new EndTurnResponse(true, "Turn is ended", getGameDTO(game), botActions)
+            response.setBotActions(botActions);
+            return new EndTurnResponse(true, "Turn is ended", response)
                     .prepareResponse(HttpStatus.OK);
         }
-
-        return new GameResponse(true, "Turn is ended", getGameDTO(game))
+        return new EndTurnResponse(true, "Turn is ended", response)
                 .prepareResponse(HttpStatus.OK);
     }
 
