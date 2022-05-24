@@ -1,15 +1,13 @@
 package ceng453.backend.services.game;
 
-import ceng453.backend.models.DTOs.game.DiceDTO;
-import ceng453.backend.models.DTOs.game.GameDTO;
-import ceng453.backend.models.DTOs.game.PlayerDTO;
-import ceng453.backend.models.DTOs.game.TileDTO;
+import ceng453.backend.models.DTOs.game.*;
 import ceng453.backend.models.actions.Action;
 import ceng453.backend.models.database.*;
 import ceng453.backend.models.enums.ActionType;
 import ceng453.backend.models.enums.GameType;
 import ceng453.backend.models.responses.BaseResponse;
 import ceng453.backend.models.responses.game.DiceResponse;
+import ceng453.backend.models.responses.game.EndTurnResponse;
 import ceng453.backend.models.responses.game.GameResponse;
 import ceng453.backend.models.tiles.GoToJailTile;
 import ceng453.backend.models.tiles.TileComposition;
@@ -238,10 +236,13 @@ public class GameService implements IGameService {
 
         // Play others' turns
         if (game.getType().equals(GameType.SINGLEPLAYER)) {
-            botService.playTurn(game);
+            List<BotActionDTO> botActions = botService.playTurn(game);
+            return new EndTurnResponse(true, "Turn is ended", getGameDTO(game), botActions)
+                    .prepareResponse(HttpStatus.OK);
         }
 
-        return new GameResponse(true, "Turn is ended", getGameDTO(game)).prepareResponse(HttpStatus.OK);
+        return new GameResponse(true, "Turn is ended", getGameDTO(game))
+                .prepareResponse(HttpStatus.OK);
     }
 
 
