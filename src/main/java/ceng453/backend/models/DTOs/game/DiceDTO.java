@@ -24,6 +24,9 @@ public class DiceDTO {
     @ApiModelProperty(notes = "The actions user can take")
     private List<ActionType> actions;
 
+    @ApiModelProperty(notes = "Details of the game")
+    private GameDTO game;
+
     public DiceDTO(int gameId) {
         this.gameId = gameId;
     }

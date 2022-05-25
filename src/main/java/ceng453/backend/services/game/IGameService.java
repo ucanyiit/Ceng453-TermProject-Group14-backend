@@ -1,13 +1,37 @@
 package ceng453.backend.services.game;
 
+import ceng453.backend.models.DTOs.game.GameDTO;
+import ceng453.backend.models.DTOs.game.PlayerDTO;
+import ceng453.backend.models.DTOs.game.TileDTO;
+import ceng453.backend.models.database.Game;
+import ceng453.backend.models.database.Player;
+import ceng453.backend.models.database.Tile;
 import ceng453.backend.models.enums.ActionType;
 import ceng453.backend.models.enums.GameType;
 import ceng453.backend.models.responses.BaseResponse;
+import ceng453.backend.repositories.PlayerRepository;
+import ceng453.backend.repositories.TileRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public interface IGameService {
+    static GameDTO getGameDTO(Game game, PlayerRepository playerRepository, TileRepository tileRepository) {
+        List<Player> players = playerRepository.findAllByGame(game);
+        List<Tile> tiles = tileRepository.findAllByGame(game);
+
+        return new GameDTO(
+                game.getId(),
+                game.getType(),
+                tiles.stream().map(TileDTO::new).collect(Collectors.toList()),
+                players.stream().map(PlayerDTO::new).collect(Collectors.toList()),
+                game.getTurn()
+        );
+    }
+
     /**
      * This method is used to create a new game.
      *

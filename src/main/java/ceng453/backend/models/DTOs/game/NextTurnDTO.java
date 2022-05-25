@@ -1,17 +1,12 @@
 package ceng453.backend.models.DTOs.game;
 
-import ceng453.backend.models.enums.ActionType;
-import ceng453.backend.services.game.TileService;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
-import java.util.Random;
-
 @Getter
 @Setter
-public class EndTurnDTO {
+public class NextTurnDTO {
     @ApiModelProperty(notes = "Game ID")
     private int gameId;
 
@@ -19,13 +14,13 @@ public class EndTurnDTO {
     private GameDTO game;
 
     @ApiModelProperty(notes = "The actions that the bot has taken with the dices")
-    private List<BotActionDTO> botActions;
+    private BotActionDTO botAction;
 
 
-    public EndTurnDTO(int gameId, GameDTO gameDTO, List<BotActionDTO> botActions) {
+    public NextTurnDTO(int gameId, GameDTO gameDTO, BotActionDTO botAction) {
         this.gameId = gameId;
         this.game = gameDTO;
-        this.botActions = botActions;
+        this.botAction = botAction;
     }
 
 

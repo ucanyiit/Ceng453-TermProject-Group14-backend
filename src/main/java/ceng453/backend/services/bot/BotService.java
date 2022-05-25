@@ -7,7 +7,6 @@ import ceng453.backend.models.database.Game;
 import ceng453.backend.models.database.Player;
 import ceng453.backend.models.database.User;
 import ceng453.backend.models.enums.ActionType;
-import ceng453.backend.models.tiles.GoToJailTile;
 import ceng453.backend.models.tiles.TileComposition;
 import ceng453.backend.repositories.GameRepository;
 import ceng453.backend.repositories.PlayerRepository;
@@ -20,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
@@ -43,40 +41,26 @@ public class BotService implements IBotService {
     @Autowired
     IValidator validator;
 
-    public List<BotActionDTO> playTurn(Game game) {
+    public BotActionDTO playTurn(Game game) {
         DiceDTO dice = new DiceDTO(game.getId());
         dice.rollDice();
-        Player bot = game.getPlayersIn().get(1);
-        List<BotActionDTO> actionList = new ArrayList<>();
+        Player bot = playerRepository.findByGameAndOrderOfPlay(game, 1);
 
         if (bot.getJailDuration() > 0) {
             playerService.playJailAction(dice, game, bot);
-            actionList.add(new BotActionDTO(dice.getDice1(), dice.getDice2(), ActionType.NO_ACTION));
-            return actionList;
+            return new BotActionDTO(dice.getDice1(), dice.getDice2(), ActionType.NO_ACTION);
         }
 
-        TileComposition tileComposition = tileService.getTileComposition(game.getId(), dice.getNewLocation(bot.getLocation()));
+        dice = playerService.playDiceAndConstructDiceDTO(dice, bot, game);
 
-        if (dice.getDice1() == dice.getDice2()) {
-            game.incrementRepeatedDiceCount();
-            gameRepository.save(game);
-            if (game.getRepeatedDiceCount() == 3) { // if it reaches the count of 3 repeated roll, sent him to the jail
-                tileComposition = tileService.getTileComposition(game.getId(), GoToJailTile.LOCATION);
-            }
-        } else {
-            game.setRepeatedDiceCount(0);
-            game.advanceTurn();
-            gameRepository.save(game);
-        }
-
-        bot.setLocation(dice.getNewLocation(bot.getLocation()));
-        playerRepository.save(bot);
+        TileComposition tileComposition = tileService.getTileComposition(game.getId(), bot.getLocation());
 
         List<Action> actions = tileComposition.onLand(bot);
         Action randomAction = actions.get(new Random().nextInt(actions.size()));
-        actionList.add(new BotActionDTO(dice.getDice1(), dice.getDice2(), randomAction.getActionType()));
+        BotActionDTO dto = new BotActionDTO(dice.getDice1(), dice.getDice2(), randomAction.getActionType());
+
         randomAction.execute(tileRepository, playerRepository);
-        return actionList;
+        return dto;
     }
 
     public User getBotUser(int i) {

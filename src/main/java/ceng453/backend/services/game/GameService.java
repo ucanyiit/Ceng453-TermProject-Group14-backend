@@ -1,15 +1,19 @@
 package ceng453.backend.services.game;
 
-import ceng453.backend.models.DTOs.game.*;
+import ceng453.backend.models.DTOs.game.BotActionDTO;
+import ceng453.backend.models.DTOs.game.DiceDTO;
+import ceng453.backend.models.DTOs.game.NextTurnDTO;
 import ceng453.backend.models.actions.Action;
-import ceng453.backend.models.database.*;
+import ceng453.backend.models.database.Game;
+import ceng453.backend.models.database.Player;
+import ceng453.backend.models.database.Score;
+import ceng453.backend.models.database.User;
 import ceng453.backend.models.enums.ActionType;
 import ceng453.backend.models.enums.GameType;
 import ceng453.backend.models.responses.BaseResponse;
 import ceng453.backend.models.responses.game.DiceResponse;
 import ceng453.backend.models.responses.game.EndTurnResponse;
 import ceng453.backend.models.responses.game.GameResponse;
-import ceng453.backend.models.tiles.GoToJailTile;
 import ceng453.backend.models.tiles.TileComposition;
 import ceng453.backend.repositories.*;
 import ceng453.backend.services.bot.IBotService;
@@ -25,7 +29,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -49,19 +52,6 @@ public class GameService implements IGameService {
     private IHelper helper;
     @Autowired
     private IValidator validator;
-
-    private GameDTO getGameDTO(Game game) {
-        List<Player> players = playerRepository.findAllByGame(game);
-        List<Tile> tiles = tileRepository.findAllByGame(game);
-
-        return new GameDTO(
-                game.getId(),
-                game.getType(),
-                tiles.stream().map(TileDTO::new).collect(Collectors.toList()),
-                players.stream().map(PlayerDTO::new).collect(Collectors.toList()),
-                game.getTurnOrder()
-        );
-    }
 
     @Override
     public ResponseEntity<BaseResponse> createGame(GameType gameType, String token, Integer playerCount) {
@@ -88,7 +78,8 @@ public class GameService implements IGameService {
         playerRepository.saveAll(players);
         tileService.createTiles(game);
 
-        return new GameResponse(true, "Game is created.", getGameDTO(game)).prepareResponse(HttpStatus.OK);
+        return new GameResponse(true, "Game is created.", IGameService.getGameDTO(game, playerRepository, tileRepository))
+                .prepareResponse(HttpStatus.OK);
     }
 
     public ResponseEntity<BaseResponse> rollDice(int gameId, String token) {
@@ -122,6 +113,7 @@ public class GameService implements IGameService {
 
             TileComposition tileComposition = tileService.getTileComposition(game.getId(), player.getLocation());
             dice.setActions(validator.getValidActions(tileComposition, player));
+            dice.setGame(IGameService.getGameDTO(game, playerRepository, tileRepository));
 
             return new DiceResponse(
                     true,
@@ -130,23 +122,7 @@ public class GameService implements IGameService {
             ).prepareResponse(HttpStatus.OK);
         }
 
-        TileComposition tileComposition = tileService.getTileComposition(game.getId(), dice.getNewLocation(player.getLocation()));
-
-        if (dice.getDice1() == dice.getDice2()) {
-            game.incrementRepeatedDiceCount();
-            gameRepository.save(game);
-            if (game.getRepeatedDiceCount() == 3) { // if it reaches the count of 3 repeated roll, sent him to the jail
-                tileComposition = tileService.getTileComposition(game.getId(), GoToJailTile.LOCATION);
-            }
-        } else {
-            game.setRepeatedDiceCount(0);
-            gameRepository.save(game);
-        }
-
-        player.setLocation(dice.getNewLocation(player.getLocation()));
-        playerRepository.save(player);
-
-        dice.setActions(validator.getValidActions(tileComposition, player));
+        dice = playerService.playDiceAndConstructDiceDTO(dice, player, game);
 
         return new DiceResponse(
                 true,
@@ -185,7 +161,10 @@ public class GameService implements IGameService {
             if (action.getActionType().equals(actionType)) {
                 action.execute(tileRepository, playerRepository);
 
-                return new GameResponse(true, "Action successfully executed", getGameDTO(game)).prepareResponse(HttpStatus.OK);
+                return new GameResponse(
+                        true,
+                        "Action successfully executed",
+                        IGameService.getGameDTO(game, playerRepository, tileRepository)).prepareResponse(HttpStatus.OK);
             }
         }
 
@@ -217,31 +196,28 @@ public class GameService implements IGameService {
             return new BaseResponse(false, "The turn is not the player's")
                     .prepareResponse(HttpStatus.FORBIDDEN);
 
-        EndTurnDTO response = new EndTurnDTO(gameId, null, null);
-        // If user has repeated dice rolls, they play again
-        if (game.getRepeatedDiceCount() != 0) {
-            response.setGame(getGameDTO(game));
+        NextTurnDTO response = new NextTurnDTO(gameId, null, null);
+
+        // If user has the turn, they play again
+        if (game.getTurn() == 0) {
+            response.setGame(IGameService.getGameDTO(game, playerRepository, tileRepository));
             return new EndTurnResponse(true, "Turn is ended", response).prepareResponse(HttpStatus.OK);
         }
 
-        game.advanceTurn();
-        gameRepository.save(game);
-
         // Play others' turns
         if (game.getType().equals(GameType.SINGLEPLAYER)) {
-            List<BotActionDTO> botActions = botService.playTurn(game);
-            response.setBotActions(botActions);
-            response.setGame(getGameDTO(game));
+            BotActionDTO botAction = botService.playTurn(game);
+            response.setBotAction(botAction);
+            response.setGame(IGameService.getGameDTO(game, playerRepository, tileRepository));
             return new EndTurnResponse(true, "Turn is ended", response)
                     .prepareResponse(HttpStatus.OK);
         }
 
-        response.setGame(getGameDTO(game));
+        response.setGame(IGameService.getGameDTO(game, playerRepository, tileRepository));
 
         return new EndTurnResponse(true, "Turn is ended", response)
                 .prepareResponse(HttpStatus.OK);
     }
-
 
     @Override
     public ResponseEntity<BaseResponse> resign(int gameId, String token) {
@@ -269,5 +245,4 @@ public class GameService implements IGameService {
 
         return new BaseResponse(true, "Successfully resigned").prepareResponse(HttpStatus.OK);
     }
-
 }

@@ -5,12 +5,14 @@ import ceng453.backend.models.enums.ActionType;
 import ceng453.backend.repositories.PlayerRepository;
 import ceng453.backend.repositories.TileRepository;
 
+import java.util.Arrays;
+
 public class PayAction extends BaseAction {
 
     private Player owner;
-    private int amount;
+    private double amount;
 
-    public PayAction(Player player, Player owner, int amount) {
+    public PayAction(Player player, Player owner, double amount) {
         super(player);
         this.owner = owner;
         this.amount = amount;
@@ -23,8 +25,7 @@ public class PayAction extends BaseAction {
         }
         player.setMoney(player.getMoney() - amount);
         owner.setMoney(owner.getMoney() + amount);
-        playerRepository.save(player);
-        playerRepository.save(owner);
+        playerRepository.saveAll(Arrays.asList(player, owner));
     }
 
     @Override

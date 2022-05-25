@@ -5,5 +5,7 @@ import ceng453.backend.models.database.Game;
 import ceng453.backend.models.database.Player;
 
 public interface IPlayerService {
-    public void playJailAction(DiceDTO dice, Game game, Player player);
+    void playJailAction(DiceDTO dice, Game game, Player player);
+
+    DiceDTO playDiceAndConstructDiceDTO(DiceDTO dice, Player player, Game game);
 }

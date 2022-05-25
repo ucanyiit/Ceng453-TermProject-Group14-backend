@@ -24,6 +24,8 @@ public class TileService implements ITileService {
     public final static Double STARTING_PRIVATE_PROPERTY_PRICE = 100.;
     public final static Double PRIVATE_PROPERTY_PRICE_INCREMENT = 400. / 12;
     public final static Integer TILE_COUNT = 16;
+    public static int INCOME_TAX_LOCATION;
+
     List<TileComposition> tileCompositions = new ArrayList<>();
     int gameId;
 
@@ -63,12 +65,12 @@ public class TileService implements ITileService {
         tileCompositions.add(new GoToJailTile(game));
         tileCompositions.add(new JustVisitingTile(game));
 
-        int randomLocation = helper.getIntegerNotUsed(usedLocations, TILE_COUNT);
+        INCOME_TAX_LOCATION = helper.getIntegerNotUsed(usedLocations, TILE_COUNT);
 
-        usedLocations.add(randomLocation);
-        tileCompositions.add(new IncomeTaxTile(game, randomLocation));
+        usedLocations.add(INCOME_TAX_LOCATION);
+        tileCompositions.add(new IncomeTaxTile(game, INCOME_TAX_LOCATION));
 
-        int propertyIndex = 0;
+        int propertyIndex = 0, randomLocation;
 
         while (tileCompositions.size() < 8) {
             randomLocation = helper.getIntegerNotUsed(usedLocations, TILE_COUNT);
