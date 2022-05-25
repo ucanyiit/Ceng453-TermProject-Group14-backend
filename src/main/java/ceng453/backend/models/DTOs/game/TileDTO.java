@@ -22,14 +22,6 @@ public class TileDTO {
     @ApiModelProperty(value = "The name of the owner of the property.", example = "bahadir")
     private String owner;
 
-    public TileDTO(String name, Integer location, Integer price, TileType propertyType, String owner) {
-        this.name = name;
-        this.location = location;
-        this.price = price;
-        this.propertyType = propertyType;
-        this.owner = owner;
-    }
-
     public TileDTO(Tile tile) {
         this.name = tile.getProperty().getName();
         this.location = tile.getLocation();

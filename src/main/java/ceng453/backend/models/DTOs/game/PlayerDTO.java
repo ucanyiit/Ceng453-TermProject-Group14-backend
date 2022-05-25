@@ -24,16 +24,6 @@ public class PlayerDTO {
     @ApiModelProperty(value = "The player's current location.", example = "4", required = true)
     private Integer location;
 
-
-    public PlayerDTO(boolean isBot, String username, Integer orderOfPlay, Double money, Integer jailDuration, Integer location) {
-        this.isBot = isBot;
-        this.username = username;
-        this.orderOfPlay = orderOfPlay;
-        this.money = money;
-        this.jailDuration = jailDuration;
-        this.location = location;
-    }
-
     public PlayerDTO(Player player) {
         this.isBot = player.getUser() == null;
         this.username = this.isBot ? "BOT" : player.getUser().getUsername();
