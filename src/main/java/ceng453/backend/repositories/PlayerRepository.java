@@ -11,4 +11,6 @@ public interface PlayerRepository extends CrudRepository<Player, Integer> {
     Player findByUserAndGame(User user, Game game);
 
     List<Player> findAllByGame(Game game);
+
+    Player findByGameAndOrderOfPlay(Game game, int orderOfPlay);
 }

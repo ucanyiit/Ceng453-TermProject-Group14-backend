@@ -11,5 +11,5 @@ public class ScoreDTO {
     private String username;
 
     @ApiModelProperty(value = "The score of the user for the game.", example = "10")
-    private Integer score;
+    private Double score;
 }

@@ -15,7 +15,7 @@ public class Score {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private Integer score;
+    private Double score;
     @CreationTimestamp
     private Date timestamp;
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -29,12 +29,12 @@ public class Score {
 
     }
 
-    public Score(User user, Integer score) {
+    public Score(User user, Double score) {
         this.user = user;
         this.score = score;
     }
 
-    public Score(User user, Game game, Integer score) {
+    public Score(User user, Game game, Double score) {
         this.user = user;
         this.game = game;
         this.score = score;

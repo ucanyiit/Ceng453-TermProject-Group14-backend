@@ -22,5 +22,5 @@ public interface ILeaderboardService {
      * @param score    the score of the user
      * @return the success message if the score is added successfully. Otherwise, the error message
      */
-    ResponseEntity<BaseResponse> addScore(String username, Integer score);
+    ResponseEntity<BaseResponse> addScore(String username, Double score);
 }

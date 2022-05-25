@@ -16,7 +16,7 @@ public class PlayerDTO {
     private Integer orderOfPlay;
 
     @ApiModelProperty(value = "The player's current money.", example = "1500", required = true)
-    private Integer money;
+    private Double money;
 
     @ApiModelProperty(value = "The player's current jail duration.", example = "2", required = true)
     private Integer jailDuration;
@@ -25,7 +25,7 @@ public class PlayerDTO {
     private Integer location;
 
 
-    public PlayerDTO(boolean isBot, String username, Integer orderOfPlay, Integer money, Integer jailDuration, Integer location) {
+    public PlayerDTO(boolean isBot, String username, Integer orderOfPlay, Double money, Integer jailDuration, Integer location) {
         this.isBot = isBot;
         this.username = username;
         this.orderOfPlay = orderOfPlay;

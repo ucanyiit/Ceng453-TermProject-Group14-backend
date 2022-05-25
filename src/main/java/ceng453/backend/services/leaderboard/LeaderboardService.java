@@ -47,7 +47,7 @@ public class LeaderboardService implements ILeaderboardService {
     }
 
     @Override
-    public ResponseEntity<BaseResponse> addScore(String username, Integer score) {
+    public ResponseEntity<BaseResponse> addScore(String username, Double score) {
         User user = userRepository.findByUsername(username);
 
         if (user == null) {

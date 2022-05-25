@@ -8,7 +8,7 @@ public class LeaderboardScoreDTO extends ScoreDTO {
     @ApiModelProperty(value = "The date of the game.", example = "10/10/2020")
     private String date;
 
-    public LeaderboardScoreDTO(String username, Integer score, String date) {
+    public LeaderboardScoreDTO(String username, Double score, String date) {
         this.setUsername(username);
         this.setScore(score);
         this.date = date;

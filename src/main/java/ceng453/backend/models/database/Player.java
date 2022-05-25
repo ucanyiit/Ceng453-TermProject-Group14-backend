@@ -13,6 +13,8 @@ import java.util.List;
 @Getter
 @Setter
 public class Player {
+    private static double STARTING_MONEY = 1500.;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -24,7 +26,7 @@ public class Player {
     private Game game;
     private Integer orderOfPlay;
     @ColumnDefault(value = "1500")
-    private Integer money;
+    private Double money;
     @ColumnDefault(value = "0")
     private Integer jailDuration = 0;
     @ColumnDefault(value = "0")
@@ -39,10 +41,10 @@ public class Player {
         this.user = user;
         this.game = game;
         this.orderOfPlay = orderOfPlay;
-        this.money = 1500;
+        this.money = STARTING_MONEY;
     }
 
-    public Integer getScore() {
+    public Double getScore() {
         Integer score = 0;
         for (Tile tile : properties) {
             score += tile.getPrice();
