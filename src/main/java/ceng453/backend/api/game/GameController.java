@@ -79,20 +79,19 @@ public class GameController {
     }
 
     /**
-     * This method used by the players to end the current turn
+     * This method used by the players to advance to the next turn
      *
      * @return only the status and message
      */
     @ApiOperation(
-            value = "End a turn",
+            value = "Advances to the next turn",
             notes = "It can be used to end a player's turn",
             response = ResponseEntity.class
     )
-    @GetMapping(path = "/end-turn", produces = "application/json")
-    public Object endTurn(@RequestParam int gameId, @RequestHeader("Authorization") String token) {
-        return gameService.endTurn(gameId, token);
+    @GetMapping(path = "/next-turn", produces = "application/json")
+    public Object nextTurn(@RequestParam int gameId, @RequestHeader("Authorization") String token) {
+        return gameService.nextTurn(gameId, token);
     }
-
 
     /**
      * This method used by the players to resign from a game

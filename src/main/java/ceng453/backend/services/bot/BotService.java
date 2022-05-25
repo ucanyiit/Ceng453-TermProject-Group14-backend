@@ -13,8 +13,10 @@ import ceng453.backend.repositories.GameRepository;
 import ceng453.backend.repositories.PlayerRepository;
 import ceng453.backend.repositories.TileRepository;
 import ceng453.backend.repositories.UserRepository;
-import ceng453.backend.services.game.TileService;
+import ceng453.backend.services.game.IPlayerService;
+import ceng453.backend.services.game.ITileService;
 import ceng453.backend.services.validator.IValidator;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +26,11 @@ import java.util.Random;
 import java.util.UUID;
 
 @Service
-public class BotService {
+@RequiredArgsConstructor
+public class BotService implements IBotService {
+
+    private final ITileService tileService;
+    private final IPlayerService playerService;
 
     @Autowired
     GameRepository gameRepository;
@@ -36,8 +42,6 @@ public class BotService {
     UserRepository userRepository;
     @Autowired
     IValidator validator;
-    @Autowired
-    TileService tileService;
 
     public List<BotActionDTO> playTurn(Game game) {
         DiceDTO dice = new DiceDTO(game.getId());
@@ -46,17 +50,7 @@ public class BotService {
         List<BotActionDTO> actionList = new ArrayList<>();
 
         if (bot.getJailDuration() > 0) {
-            if (dice.getDice1() == dice.getDice2()) {
-                bot.setJailDuration(0);
-                game.incrementRepeatedDiceCount();
-            } else {
-                bot.setJailDuration(bot.getJailDuration() - 1);
-                game.setRepeatedDiceCount(0);
-            }
-            playerRepository.save(bot);
-
-            game.advanceTurn();
-            gameRepository.save(game);
+            playerService.playJailAction(dice, game, bot);
             actionList.add(new BotActionDTO(dice.getDice1(), dice.getDice2(), ActionType.NO_ACTION));
             return actionList;
         }

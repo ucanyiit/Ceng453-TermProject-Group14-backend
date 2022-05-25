@@ -19,13 +19,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class TileService {
+public class TileService implements ITileService {
 
     public final static Double STARTING_PRIVATE_PROPERTY_PRICE = 100.;
     public final static Double PRIVATE_PROPERTY_PRICE_INCREMENT = 400. / 12;
     public final static Integer TILE_COUNT = 16;
     List<TileComposition> tileCompositions = new ArrayList<>();
     int gameId;
+
     @Autowired
     private IHelper helper;
     @Autowired
@@ -45,18 +46,6 @@ public class TileService {
             }
         }
         throw new RuntimeException("No tile composition found for location " + location);
-    }
-
-    private void createTileCompositions(int gameId) {
-        this.gameId = gameId;
-
-        Game game = gameRepository.findById(gameId).get();
-        List<Tile> tiles = tileRepository.findAllByGame(game);
-        tileCompositions = new ArrayList<>();
-        for (Tile tile : tiles) {
-            TileComposition tileComposition = new TileComposition(tile);
-            tileCompositions.add(tileComposition);
-        }
     }
 
     public void createTiles(Game game) {
@@ -105,6 +94,18 @@ public class TileService {
         tileRepository.saveAll(tileCompositions.stream().map(TileComposition::getTile).collect(Collectors.toList()));
     }
 
+    private void createTileCompositions(int gameId) {
+        this.gameId = gameId;
+
+        Game game = gameRepository.findById(gameId).get();
+        List<Tile> tiles = tileRepository.findAllByGame(game);
+        tileCompositions = new ArrayList<>();
+        for (Tile tile : tiles) {
+            TileComposition tileComposition = new TileComposition(tile);
+            tileCompositions.add(tileComposition);
+        }
+    }
+
     private List<Property> createAndGetAllProperties() {
         Iterable<Property> iterable = propertyRepository.findAll();
         List<Property> properties = new ArrayList<>();
@@ -137,5 +138,4 @@ public class TileService {
         Property property = new Property(name, propertyType);
         propertyRepository.save(property);
     }
-
 }

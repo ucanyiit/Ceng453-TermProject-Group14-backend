@@ -24,7 +24,7 @@ public interface IGameService {
 
     ResponseEntity<BaseResponse> buyProperty(int gameId, int location, String token);
 
-    ResponseEntity<BaseResponse> endTurn(int gameId, String token);
+    ResponseEntity<BaseResponse> nextTurn(int gameId, String token);
 
     ResponseEntity<BaseResponse> resign(int gameId, String token);
 }
