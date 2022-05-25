@@ -12,7 +12,7 @@ import ceng453.backend.models.responses.game.GameResponse;
 import ceng453.backend.models.tiles.GoToJailTile;
 import ceng453.backend.models.tiles.TileComposition;
 import ceng453.backend.repositories.*;
-import ceng453.backend.services.bot.BotService;
+import ceng453.backend.services.bot.IBotService;
 import ceng453.backend.services.helper.IHelper;
 import ceng453.backend.services.validator.IValidator;
 import lombok.RequiredArgsConstructor;
@@ -31,9 +31,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class GameService implements IGameService {
 
-    // Injection
-    private final TileService tileService;
-    private final BotService botService;
+    private final ITileService tileService;
+    private final IBotService botService;
+    private final IPlayerService playerService;
+
     @Autowired
     private GameRepository gameRepository;
     @Autowired
@@ -117,17 +118,7 @@ public class GameService implements IGameService {
         dice.rollDice();
 
         if (player.getJailDuration() > 0) {
-            if (dice.getDice1() == dice.getDice2()) {
-                player.setJailDuration(0);
-                game.incrementRepeatedDiceCount();
-            } else {
-                player.setJailDuration(player.getJailDuration() - 1);
-                game.setRepeatedDiceCount(0);
-            }
-            playerRepository.save(player);
-
-            game.advanceTurn();
-            gameRepository.save(game);
+            playerService.playJailAction(dice, game, player);
 
             TileComposition tileComposition = tileService.getTileComposition(game.getId(), player.getLocation());
             dice.setActions(validator.getValidActions(tileComposition, player));
@@ -207,7 +198,7 @@ public class GameService implements IGameService {
     }
 
     @Override
-    public ResponseEntity<BaseResponse> endTurn(int gameId, String token) {
+    public ResponseEntity<BaseResponse> nextTurn(int gameId, String token) {
         String username;
         try {
             username = helper.getUsernameFromToken(token);
@@ -236,14 +227,17 @@ public class GameService implements IGameService {
         game.advanceTurn();
         gameRepository.save(game);
 
-        response.setGame(getGameDTO(game));
         // Play others' turns
         if (game.getType().equals(GameType.SINGLEPLAYER)) {
             List<BotActionDTO> botActions = botService.playTurn(game);
             response.setBotActions(botActions);
+            response.setGame(getGameDTO(game));
             return new EndTurnResponse(true, "Turn is ended", response)
                     .prepareResponse(HttpStatus.OK);
         }
+
+        response.setGame(getGameDTO(game));
+
         return new EndTurnResponse(true, "Turn is ended", response)
                 .prepareResponse(HttpStatus.OK);
     }
