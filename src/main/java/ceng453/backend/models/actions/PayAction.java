@@ -9,8 +9,8 @@ import java.util.Arrays;
 
 public class PayAction extends BaseAction {
 
-    private Player owner;
-    private double amount;
+    private final Player owner;
+    private final double amount;
 
     public PayAction(Player player, Player owner, double amount) {
         super(player);

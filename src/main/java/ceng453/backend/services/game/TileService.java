@@ -1,11 +1,13 @@
 package ceng453.backend.services.game;
 
 import ceng453.backend.models.database.Game;
+import ceng453.backend.models.database.Player;
 import ceng453.backend.models.database.Property;
 import ceng453.backend.models.database.Tile;
 import ceng453.backend.models.enums.TileType;
 import ceng453.backend.models.tiles.*;
 import ceng453.backend.repositories.GameRepository;
+import ceng453.backend.repositories.PlayerRepository;
 import ceng453.backend.repositories.PropertyRepository;
 import ceng453.backend.repositories.TileRepository;
 import ceng453.backend.services.helper.IHelper;
@@ -34,6 +36,8 @@ public class TileService implements ITileService {
     @Autowired
     private TileRepository tileRepository;
     @Autowired
+    private PlayerRepository playerRepository;
+    @Autowired
     private GameRepository gameRepository;
     @Autowired
     private PropertyRepository propertyRepository;
@@ -44,6 +48,10 @@ public class TileService implements ITileService {
         }
         for (TileComposition tileComposition : tileCompositions) {
             if (tileComposition.getTile().getLocation() == location) {
+                if (tileComposition.getTile().getOwner() != null) {
+                    Player player = playerRepository.findById(tileComposition.getTile().getOwner().getId()).get();
+                    tileComposition.getTile().setOwner(player);
+                }
                 return tileComposition;
             }
         }
