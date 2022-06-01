@@ -4,6 +4,7 @@ import ceng453.backend.models.DTOs.game.BotActionDTO;
 import ceng453.backend.models.DTOs.game.DiceDTO;
 import ceng453.backend.models.DTOs.game.NextTurnDTO;
 import ceng453.backend.models.actions.Action;
+import ceng453.backend.models.actions.CheatAction;
 import ceng453.backend.models.database.Game;
 import ceng453.backend.models.database.Player;
 import ceng453.backend.models.database.Score;
@@ -166,6 +167,16 @@ public class GameService implements IGameService {
                         "Action successfully executed",
                         IGameService.getGameDTO(game, playerRepository, tileRepository)).prepareResponse(HttpStatus.OK);
             }
+        }
+
+        if (actionType.equals(ActionType.CHEAT)) {
+            Action action = new CheatAction(player);
+            action.execute(tileRepository, playerRepository);
+
+            return new GameResponse(
+                    true,
+                    "Action successfully executed",
+                    IGameService.getGameDTO(game, playerRepository, tileRepository)).prepareResponse(HttpStatus.OK);
         }
 
         return new BaseResponse(false, "Action is not valid").prepareResponse(HttpStatus.BAD_REQUEST);
