@@ -2,7 +2,11 @@
 
 ### Postman
 
-[Invite link](https://app.getpostman.com/join-team?invite_code=90c3a5214bfd863d6f8e15adccac1f62&target_code=0f5b0f8d4b7aa60db61c35c6731eb631) to the Postman collections.
+[Invite link](https://app.getpostman.com/join-team?invite_code=90c3a5214bfd863d6f8e15adccac1f62&target_code=0f5b0f8d4b7aa60db61c35c6731eb631)
+to the Postman collections.
+
+- If you get 403 from any request, the token might be expired. Please generate a new token by sending a login request,
+  and then update collections' bearer tokens using that.
 
 ### Swagger Documentations
 

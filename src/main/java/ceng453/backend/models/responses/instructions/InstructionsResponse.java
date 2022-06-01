@@ -19,6 +19,5 @@ public class InstructionsResponse extends BaseResponse {
         super(status, message);
         this.response = response;
     }
-
 }
 

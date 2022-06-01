@@ -18,9 +18,7 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -148,22 +146,26 @@ public class AuthenticationService implements IAuthenticationService {
         }
 
         // Generate a token here
-        String token = createToken(user.getUsername());
-        tokenMap.put(user.getUsername(), new Pair<>(token, new Date(System.currentTimeMillis() + cookieDuration)));
+        String code = generateToken();
+        tokenMap.put(user.getUsername(), new Pair<>(code, new Date(System.currentTimeMillis() + cookieDuration)));
 
         try {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom("ucanyiittest@gmail.com");
             message.setTo(user.getEmail());
             message.setSubject("Monopoly - Password Reset");
-            String passwordResetLink = "http://localhost:8080/api/auth/reset-password?token=" + token + "&username=" + username + "&password=" + "new-password";
-            message.setText("You can reset your password using " + passwordResetLink + ".");
+            message.setText("You can reset your password using the code: " + code);
             emailSender.send(message);
         } catch (Exception e) {
             return new BaseResponse(false, "Error sending email.").prepareResponse(HttpStatus.BAD_REQUEST);
         }
 
         return new BaseResponse(true, "A password reset link is sent to your mail.").prepareResponse(HttpStatus.OK);
+    }
+
+    private String generateToken() {
+        String token = UUID.randomUUID().toString();
+        return Base64.getEncoder().encodeToString(token.getBytes()).substring(0, 6).toUpperCase(Locale.ROOT);
     }
 
     @Override

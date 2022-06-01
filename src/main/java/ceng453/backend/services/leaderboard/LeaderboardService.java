@@ -28,9 +28,9 @@ public class LeaderboardService implements ILeaderboardService {
     private UserRepository userRepository;
 
     @Override
-    public ResponseEntity<BaseResponse> getLeaderboard(String startDate, String endDate) {
+    public ResponseEntity<ScoresResponse> getLeaderboard(String startDate, String endDate) {
         if (startDate == null || endDate == null) {
-            return new BaseResponse(false, "Start and end date are required").prepareResponse(HttpStatus.BAD_REQUEST);
+            return new ScoresResponse(false, "Start and end date are required", null).prepareResponse(HttpStatus.BAD_REQUEST);
         }
 
         try {
@@ -46,7 +46,7 @@ public class LeaderboardService implements ILeaderboardService {
 
             return new ScoresResponse(true, "", scoreDTOS).prepareResponse(HttpStatus.OK);
         } catch (ParseException e) {
-            return new BaseResponse(false, "Start and end date should be in the dd/MM/yyyy format").prepareResponse(HttpStatus.BAD_REQUEST);
+            return new ScoresResponse(false, "Start and end date should be in the dd/MM/yyyy format", null).prepareResponse(HttpStatus.BAD_REQUEST);
         }
     }
 

@@ -3,6 +3,10 @@ package ceng453.backend.api.game;
 import ceng453.backend.models.DTOs.game.BuyPropertyDTO;
 import ceng453.backend.models.DTOs.game.StartGameDTO;
 import ceng453.backend.models.DTOs.game.TakeActionDTO;
+import ceng453.backend.models.responses.BaseResponse;
+import ceng453.backend.models.responses.game.DiceResponse;
+import ceng453.backend.models.responses.game.EndTurnResponse;
+import ceng453.backend.models.responses.game.GameResponse;
 import ceng453.backend.services.game.IGameService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +33,7 @@ public class GameController {
             response = ResponseEntity.class
     )
     @PostMapping(path = "/create-game", produces = "application/json")
-    public Object createGame(@RequestBody StartGameDTO startGameDTO, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<GameResponse> createGame(@RequestBody StartGameDTO startGameDTO, @RequestHeader("Authorization") String token) {
         return gameService.createGame(startGameDTO.getType(), token, 2);
     }
 
@@ -44,7 +48,7 @@ public class GameController {
             response = ResponseEntity.class
     )
     @GetMapping(path = "/roll-dice", produces = "application/json")
-    public Object rollDice(@RequestParam int gameId, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<DiceResponse> rollDice(@RequestParam int gameId, @RequestHeader("Authorization") String token) {
         return gameService.rollDice(gameId, token);
     }
 
@@ -60,7 +64,7 @@ public class GameController {
             response = ResponseEntity.class
     )
     @PostMapping(path = "/take-action", produces = "application/json")
-    public Object takeAction(@RequestBody TakeActionDTO takeActionDTO, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<GameResponse> takeAction(@RequestBody TakeActionDTO takeActionDTO, @RequestHeader("Authorization") String token) {
         return gameService.takeAction(takeActionDTO.getGameId(), takeActionDTO.getAction(), token);
     }
 
@@ -89,7 +93,7 @@ public class GameController {
             response = ResponseEntity.class
     )
     @GetMapping(path = "/next-turn", produces = "application/json")
-    public Object nextTurn(@RequestParam int gameId, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<EndTurnResponse> nextTurn(@RequestParam int gameId, @RequestHeader("Authorization") String token) {
         return gameService.nextTurn(gameId, token);
     }
 
@@ -104,7 +108,7 @@ public class GameController {
             response = ResponseEntity.class
     )
     @GetMapping(path = "/resign", produces = "application/json")
-    public Object resign(@RequestParam int gameId, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<BaseResponse> resign(@RequestParam int gameId, @RequestHeader("Authorization") String token) {
         return gameService.resign(gameId, token);
     }
 }

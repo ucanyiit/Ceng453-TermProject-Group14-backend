@@ -1,6 +1,7 @@
 package ceng453.backend.services.leaderboard;
 
 import ceng453.backend.models.responses.BaseResponse;
+import ceng453.backend.models.responses.leaderboard.ScoresResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +14,7 @@ public interface ILeaderboardService {
      * @param endDate   the end date of the leaderboard
      * @return the scores of the top players in sorted manner
      */
-    ResponseEntity<BaseResponse> getLeaderboard(String startDate, String endDate);
+    ResponseEntity<ScoresResponse> getLeaderboard(String startDate, String endDate);
 
     /**
      * Add a new score for the given user
