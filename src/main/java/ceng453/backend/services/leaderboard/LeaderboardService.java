@@ -16,6 +16,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class LeaderboardService implements ILeaderboardService {
@@ -37,6 +38,9 @@ public class LeaderboardService implements ILeaderboardService {
             Date formattedEndDate = new SimpleDateFormat("dd/MM/yyyy").parse(endDate);
 
             List<Score> scores = scoreRepository.findAllByTimestampBetween(formattedStartDate, formattedEndDate);
+
+            scores.sort((o1, o2) -> o2.getScore().compareTo(o1.getScore()));
+            scores = scores.stream().limit(20).collect(Collectors.toList());
 
             List<LeaderboardScoreDTO> scoreDTOS = scores.stream().map(score -> new LeaderboardScoreDTO(score.getUser().getUsername(), score.getScore(), score.getTimestamp().toString())).collect(java.util.stream.Collectors.toList());
 
