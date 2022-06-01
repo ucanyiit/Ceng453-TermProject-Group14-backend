@@ -2,6 +2,7 @@ package ceng453.backend.api.instructions;
 
 import ceng453.backend.models.responses.instructions.InstructionsResponse;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,7 +18,7 @@ public class InstructionsController {
      * Returns a list of instructions.
      */
     @GetMapping(produces = "application/json")
-    public Object getInstructions() {
+    public ResponseEntity<InstructionsResponse> getInstructions() {
         List<String> instructions = Arrays.asList("The purpose of the game is to avoid bankrupt during the game. " +
                 "\n Hence, you may be careful about paying taxes and \n spend your money on properties around the tiles you are on.\n" +
                 "\n" +

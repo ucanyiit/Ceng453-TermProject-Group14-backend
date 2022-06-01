@@ -35,8 +35,8 @@ public class BaseResponse implements Serializable {
      * @param status The http status of the response.
      * @return The response as a ResponseEntity object.
      */
-    public ResponseEntity<BaseResponse> prepareResponse(HttpStatus status) {
-        return new ResponseEntity<>(this, status);
+    public <T extends BaseResponse> ResponseEntity<T> prepareResponse(HttpStatus status) {
+        return new ResponseEntity<T>((T) this, status);
     }
 
 }

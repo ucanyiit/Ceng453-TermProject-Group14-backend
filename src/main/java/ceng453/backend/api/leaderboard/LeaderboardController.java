@@ -2,6 +2,7 @@ package ceng453.backend.api.leaderboard;
 
 import ceng453.backend.models.DTOs.leaderboard.ScoreDTO;
 import ceng453.backend.models.responses.BaseResponse;
+import ceng453.backend.models.responses.leaderboard.ScoresResponse;
 import ceng453.backend.services.leaderboard.ILeaderboardService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -32,7 +33,7 @@ public class LeaderboardController {
             response = ResponseEntity.class
     )
     @GetMapping("")
-    public ResponseEntity<BaseResponse> getLeaderboard(
+    public ResponseEntity<ScoresResponse> getLeaderboard(
             @ApiParam(value = "The unique username", example = "yigitucan")
             @RequestParam String startDate,
             @ApiParam(value = "The new password that contains more than 8 character", example = "yiityiit")

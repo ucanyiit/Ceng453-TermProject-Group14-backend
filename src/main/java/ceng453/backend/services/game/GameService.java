@@ -55,7 +55,7 @@ public class GameService implements IGameService {
     private IValidator validator;
 
     @Override
-    public ResponseEntity<BaseResponse> createGame(GameType gameType, String token, Integer playerCount) {
+    public ResponseEntity<GameResponse> createGame(GameType gameType, String token, Integer playerCount) {
         String username;
         try {
             username = helper.getUsernameFromToken(token);
@@ -83,7 +83,7 @@ public class GameService implements IGameService {
                 .prepareResponse(HttpStatus.OK);
     }
 
-    public ResponseEntity<BaseResponse> rollDice(int gameId, String token) {
+    public ResponseEntity<DiceResponse> rollDice(int gameId, String token) {
         String username;
         try {
             username = helper.getUsernameFromToken(token);
@@ -133,23 +133,23 @@ public class GameService implements IGameService {
     }
 
     @Override
-    public ResponseEntity<BaseResponse> takeAction(int gameId, ActionType actionType, String token) {
+    public ResponseEntity<GameResponse> takeAction(int gameId, ActionType actionType, String token) {
         String username;
         try {
             username = helper.getUsernameFromToken(token);
         } catch (JSONException e) {
             e.printStackTrace();
-            return new BaseResponse(false, "Authentication failed.").prepareResponse(HttpStatus.UNAUTHORIZED);
+            return new GameResponse(false, "Authentication failed.", null).prepareResponse(HttpStatus.UNAUTHORIZED);
         }
 
         Game game = gameRepository.findById(gameId).orElse(null);
 
         if (game == null) // game id check
-            return new DiceResponse(false, "Game id not found", null)
+            return new GameResponse(false, "Game id not found", null)
                     .prepareResponse(HttpStatus.NOT_FOUND);
 
         if (!validator.isPlayersTurn(game, username))
-            return new DiceResponse(false, "The turn is not the player's", null)
+            return new GameResponse(false, "The turn is not the player's", null)
                     .prepareResponse(HttpStatus.FORBIDDEN);
 
         User user = userRepository.findByUsername(username);
@@ -188,23 +188,23 @@ public class GameService implements IGameService {
     }
 
     @Override
-    public ResponseEntity<BaseResponse> nextTurn(int gameId, String token) {
+    public ResponseEntity<EndTurnResponse> nextTurn(int gameId, String token) {
         String username;
         try {
             username = helper.getUsernameFromToken(token);
         } catch (JSONException e) {
             e.printStackTrace();
-            return new BaseResponse(false, "Authentication failed.").prepareResponse(HttpStatus.UNAUTHORIZED);
+            return new EndTurnResponse(false, "Authentication failed.", null).prepareResponse(HttpStatus.UNAUTHORIZED);
         }
 
         Game game = gameRepository.findById(gameId).orElse(null);
 
         if (game == null) // game id check
-            return new BaseResponse(false, "Game id not found")
+            return new EndTurnResponse(false, "Game id not found", null)
                     .prepareResponse(HttpStatus.NOT_FOUND);
 
         if (!validator.isPlayersTurn(game, username))
-            return new BaseResponse(false, "The turn is not the player's")
+            return new EndTurnResponse(false, "The turn is not the player's", null)
                     .prepareResponse(HttpStatus.FORBIDDEN);
 
         NextTurnDTO response = new NextTurnDTO(gameId, null, null);
