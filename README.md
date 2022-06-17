@@ -15,3 +15,15 @@ Swagger documentations are located [here](https://ceng453-term-project-group14.h
 ### Database Models
 
 [![Database Models](./docs/project_group14.svg)]()
+
+
+### How to run
+
+The project hasn't been deployed to Heroku. Hence, in order to provide a server, we have to run the backend code the first, and then we are able to run the front end code without errors.
+
+That is,
+1. Install maven dependencies
+2. Open the code in any IDE you would like to use
+3. Choose target for the run config
+4. Run the backend app
+5. Run the frontend app
