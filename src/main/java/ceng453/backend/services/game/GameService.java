@@ -86,7 +86,9 @@ public class GameService implements IGameService {
                 if (game.getType().equals(GameType.MULTIPLAYER)
                         && game.getPlayersIn().size() == 1
                         && !game.getPlayersIn().get(0).getUser().getUsername().equals(username)) {
-                    game.addPlayer(new Player(userRepository.findByUsername(username), game, 1));
+                    Player player =  new Player(userRepository.findByUsername(username), game, 1);
+                    playerRepository.save(player);
+                    game.addPlayer(player);
                     gameRepository.save(game);
                     return new GameResponse(true, "joined the game.", IGameService.getGameDTO(game, playerRepository, tileRepository))
                             .prepareResponse(HttpStatus.OK);
