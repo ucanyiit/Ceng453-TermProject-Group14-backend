@@ -274,8 +274,10 @@ public class GameService implements IGameService {
 
         NextTurnDTO response = new NextTurnDTO(gameId, null, null);
 
+        User user = userRepository.findByUsername(username);
+
         // If user has the turn, they play again
-        if (game.getTurn() == 0) {
+        if (game.getTurn() == game.getPlayersIn().indexOf(user)) {
             response.setGame(IGameService.getGameDTO(game, playerRepository, tileRepository));
             return new EndTurnResponse(true, "Turn is ended", response).prepareResponse(HttpStatus.OK);
         }

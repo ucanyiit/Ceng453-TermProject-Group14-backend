@@ -49,7 +49,7 @@ public class Game {
 
     public void advanceTurn() {
         this.turn += 1;
-        this.turn %= this.playerCount;
+        this.turn %= this.playersIn.size();
     }
 
     public void addPlayer(Player player) {
