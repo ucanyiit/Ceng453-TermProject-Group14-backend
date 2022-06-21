@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
+
 @RequestMapping("/api/game")
 @RequiredArgsConstructor
 @RestController
@@ -35,6 +37,23 @@ public class GameController {
     @PostMapping(path = "/create-game", produces = "application/json")
     public ResponseEntity<GameResponse> createGame(@RequestBody StartGameDTO startGameDTO, @RequestHeader("Authorization") String token) {
         return gameService.createGame(startGameDTO.getType(), token, 2);
+    }
+
+
+    /**
+     * This method used to get the current state of the game.
+     * @param gameId The game id.
+     * @param token The user's token used to authenticate.
+     * @return A response with the game details
+     */
+    @ApiOperation(
+            value = "Get the current state of the game",
+            notes = "It provides the current state of the game up to now from the given date",
+            response = ResponseEntity.class
+    )
+    @GetMapping(path = "/get-game", produces = "application/json")
+    public ResponseEntity<GameResponse> getCurrentStateGame(@RequestParam int gameId, @RequestHeader("Authorization") String token) {
+        return gameService.getCurrentStateGame(gameId, token);
     }
 
     /**

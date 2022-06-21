@@ -17,6 +17,7 @@ import ceng453.backend.repositories.TileRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,6 +45,8 @@ public interface IGameService {
      * @return A response entity with the game details
      */
     ResponseEntity<GameResponse> createGame(GameType gameType, String token, Integer playerCount);
+
+    ResponseEntity<GameResponse> getCurrentStateGame(int gameId, String token);
 
     ResponseEntity<DiceResponse> rollDice(int gameId, String token);
 
