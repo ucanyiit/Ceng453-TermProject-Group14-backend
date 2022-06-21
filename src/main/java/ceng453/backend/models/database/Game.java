@@ -48,8 +48,8 @@ public class Game {
     }
 
     public void advanceTurn() {
-        this.turn += 1;
-        this.turn %= this.playersIn.size();
+        this.turnOrder += 1;
+        this.turnOrder %= this.playersIn.size();
     }
 
     public void addPlayer(Player player) {
