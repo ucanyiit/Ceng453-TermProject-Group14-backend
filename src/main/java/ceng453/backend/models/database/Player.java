@@ -31,6 +31,11 @@ public class Player {
     private Integer jailDuration = 0;
     @ColumnDefault(value = "0")
     private Integer location = 0;
+    @ColumnDefault(value = "0")
+    private Integer die1;
+    @ColumnDefault(value = "0")
+    private Integer die2;
+
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Tile> properties = new ArrayList<>();
 
@@ -50,5 +55,10 @@ public class Player {
             score += tile.getPrice();
         }
         return score + money;
+    }
+
+    public void setDice(Integer die1, Integer die2) {
+        this.die1 = die1;
+        this.die2 = die2;
     }
 }

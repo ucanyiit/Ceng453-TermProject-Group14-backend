@@ -34,7 +34,6 @@ public class PlayerService implements IPlayerService {
         } else {
             player.setJailDuration(player.getJailDuration() - 1);
             game.setRepeatedDiceCount(0);
-            game.advanceTurn();
         }
 
         playerRepository.save(player);
@@ -42,6 +41,7 @@ public class PlayerService implements IPlayerService {
     }
 
     public DiceDTO playDiceAndConstructDiceDTO(DiceDTO dice, Player player, Game game) {
+        player.setDice(dice.getDice1(), dice.getDice2());
         int newLocation = dice.getNewLocation(player.getLocation());
         TileComposition tileComposition = tileService.getTileComposition(game.getId(), newLocation);
 

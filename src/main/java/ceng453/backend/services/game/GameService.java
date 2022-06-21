@@ -223,11 +223,14 @@ public class GameService implements IGameService {
         TileComposition tileComposition = tileService.getTileComposition(game.getId(), player.getLocation());
         List<Action> actions = tileComposition.onLand(player);
 
+        if (!player.getDie1().equals(player.getDie2())) {
+            game.advanceTurn();
+            gameRepository.save(game);
+        }
+
         for (Action action : actions) {
             if (action.getActionType().equals(actionType)) {
                 action.execute(tileRepository, playerRepository);
-                game.advanceTurn();
-                gameRepository.save(game);
 
                 return new GameResponse(
                         true,
@@ -239,8 +242,6 @@ public class GameService implements IGameService {
         if (actionType.equals(ActionType.CHEAT)) {
             Action action = new CheatAction(player);
             action.execute(tileRepository, playerRepository);
-            game.advanceTurn();
-            gameRepository.save(game);
 
             return new GameResponse(
                     true,
