@@ -2,6 +2,7 @@ package ceng453.backend.services.game;
 
 import ceng453.backend.models.DTOs.game.BotActionDTO;
 import ceng453.backend.models.DTOs.game.DiceDTO;
+import ceng453.backend.models.DTOs.game.GameDTO;
 import ceng453.backend.models.DTOs.game.NextTurnDTO;
 import ceng453.backend.models.actions.Action;
 import ceng453.backend.models.actions.CheatAction;
@@ -28,9 +29,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -84,7 +83,9 @@ public class GameService implements IGameService {
             List<Game> allGames = new ArrayList<>();
             gameRepository.findAll().forEach(allGames::add);
             for (Game game : allGames) {
-                if (game.getPlayersIn().size() == 1) {
+                if (game.getType().equals(GameType.MULTIPLAYER)
+                        && game.getPlayersIn().size() == 1
+                        && !game.getPlayersIn().get(0).getUser().getUsername().equals(username)) {
                     game.addPlayer(new Player(userRepository.findByUsername(username), game, 1));
                     gameRepository.save(game);
                     return new GameResponse(true, "joined the game.", IGameService.getGameDTO(game, playerRepository, tileRepository))
@@ -97,7 +98,9 @@ public class GameService implements IGameService {
 
         if (gameType == GameType.SINGLEPLAYER) {
             for (int i = 1; i < playerCount; i++) {
-                game.addPlayer(new Player(botService.getBotUser(i), game, i));
+                Player bot = new Player(botService.getBotUser(i), game, i);
+                game.addPlayer(bot);
+                playerRepository.save(bot);
             }
             gameRepository.save(game);
         }
@@ -127,15 +130,19 @@ public class GameService implements IGameService {
         }
 
 
-
         Player player = playerRepository.findByUserAndGame(user, game);
         if (player == null) {
             return new GameResponse(false, "You are not a player in this game.", null).prepareResponse(HttpStatus.NOT_FOUND);
         }
 
-        return new GameResponse(game.getPlayerCount() == 2, "Game is retrieved.", IGameService.getGameDTO(game, playerRepository, tileRepository))
-                .prepareResponse(HttpStatus.OK);
+        GameDTO gameDTO = IGameService.getGameDTO(game, playerRepository, tileRepository);
 
+        if (game.getPlayersIn().size() == 1) {
+            return new GameResponse(false, "Waiting for other player.", gameDTO).prepareResponse(HttpStatus.OK);
+
+        }
+
+        return new GameResponse(true, "Game is retrieved.", gameDTO).prepareResponse(HttpStatus.OK);
     }
 
 
