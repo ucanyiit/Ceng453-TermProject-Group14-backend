@@ -99,7 +99,7 @@ public class AuthenticationService implements IAuthenticationService {
 
         try {
             SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom("ucanyiittest@gmail.com");
+            message.setFrom("monopolygame453@yandex.com");
             message.setTo(email);
             message.setSubject("Monopoly - Hello!");
             message.setText("Welcome to Project Monopoly, " + username + ". Thank you for registering.");
@@ -151,7 +151,7 @@ public class AuthenticationService implements IAuthenticationService {
 
         try {
             SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom("ucanyiittest@gmail.com");
+            message.setFrom("monopolygame453@yandex.com");
             message.setTo(user.getEmail());
             message.setSubject("Monopoly - Password Reset");
             message.setText("You can reset your password using the code: " + code);
