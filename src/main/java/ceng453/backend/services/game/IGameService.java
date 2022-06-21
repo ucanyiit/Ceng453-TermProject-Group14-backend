@@ -32,7 +32,7 @@ public interface IGameService {
                 game.getType(),
                 tiles.stream().map(TileDTO::new).collect(Collectors.toList()),
                 players.stream().map(PlayerDTO::new).collect(Collectors.toList()),
-                game.getTurn()
+                game.getTurnOrder()
         );
     }
 
