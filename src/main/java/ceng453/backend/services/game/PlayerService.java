@@ -57,7 +57,6 @@ public class PlayerService implements IPlayerService {
             }
         } else {
             game.setRepeatedDiceCount(0);
-            game.advanceTurn();
             gameRepository.save(game);
         }
 
