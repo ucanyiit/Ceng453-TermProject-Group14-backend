@@ -56,6 +56,20 @@ public class GameService implements IGameService {
     @Autowired
     private IValidator validator;
 
+
+    private Game setupGame(GameType gameType, String username, Integer playerCount) {
+        User user = userRepository.findByUsername(username);
+        Game game = new Game(playerCount, gameType);
+        List<Player> players = new ArrayList<>();
+
+        players.add(new Player(user, game, 0));
+
+        gameRepository.save(game);
+        playerRepository.saveAll(players);
+        tileService.createTiles(game);
+        return game;
+    }
+
     @Override
     public ResponseEntity<GameResponse> createGame(GameType gameType, String token, Integer playerCount) {
         String username;
@@ -65,21 +79,28 @@ public class GameService implements IGameService {
             e.printStackTrace();
             return new GameResponse(false, "Authentication failed.", null).prepareResponse(HttpStatus.UNAUTHORIZED);
         }
-        User user = userRepository.findByUsername(username);
-        Game game = new Game(playerCount, gameType);
-        List<Player> players = new ArrayList<>();
 
-        players.add(new Player(user, game, 0));
-
-        if (gameType == GameType.SINGLEPLAYER) {
-            for (int i = 1; i < playerCount; i++) {
-                players.add(new Player(botService.getBotUser(i), game, i));
+        if (gameType == GameType.MULTIPLAYER) {
+            List<Game> allGames = new ArrayList<>();
+            gameRepository.findAll().forEach(allGames::add);
+            for (Game game : allGames) {
+                if (game.getPlayersIn().size() == 1) {
+                    game.addPlayer(new Player(userRepository.findByUsername(username), game, 1));
+                    gameRepository.save(game);
+                    return new GameResponse(true, "joined the game.", IGameService.getGameDTO(game, playerRepository, tileRepository))
+                            .prepareResponse(HttpStatus.OK);
+                }
             }
         }
 
-        gameRepository.save(game);
-        playerRepository.saveAll(players);
-        tileService.createTiles(game);
+        Game game = setupGame(gameType, username, playerCount);
+
+        if (gameType == GameType.SINGLEPLAYER) {
+            for (int i = 1; i < playerCount; i++) {
+                game.addPlayer(new Player(botService.getBotUser(i), game, i));
+            }
+            gameRepository.save(game);
+        }
 
         return new GameResponse(true, "Game is created.", IGameService.getGameDTO(game, playerRepository, tileRepository))
                 .prepareResponse(HttpStatus.OK);
@@ -94,25 +115,29 @@ public class GameService implements IGameService {
             e.printStackTrace();
             return new GameResponse(false, "Authentication failed.", null).prepareResponse(HttpStatus.UNAUTHORIZED);
         }
-        Game game = gameRepository.findById(gameId).orElse(null);
-        if (game == null) {
-            return new GameResponse(false, "Game does not exist.", null).prepareResponse(HttpStatus.NOT_FOUND);
-        }
 
         User user = userRepository.findByUsername(username);
         if (user == null) {
             return new GameResponse(false, "User does not exist.", null).prepareResponse(HttpStatus.NOT_FOUND);
         }
 
+        Game game = gameRepository.findById(gameId).orElse(null);
+        if (game == null) {
+            return new GameResponse(false, "Game does not exist.", null).prepareResponse(HttpStatus.NOT_FOUND);
+        }
+
+
+
         Player player = playerRepository.findByUserAndGame(user, game);
         if (player == null) {
             return new GameResponse(false, "You are not a player in this game.", null).prepareResponse(HttpStatus.NOT_FOUND);
         }
 
-        return new GameResponse(true, "Game is retrieved.", IGameService.getGameDTO(game, playerRepository, tileRepository))
+        return new GameResponse(game.getPlayerCount() == 2, "Game is retrieved.", IGameService.getGameDTO(game, playerRepository, tileRepository))
                 .prepareResponse(HttpStatus.OK);
 
     }
+
 
     public ResponseEntity<DiceResponse> rollDice(int gameId, String token) {
         String username;

@@ -36,7 +36,7 @@ public class GameController {
     )
     @PostMapping(path = "/create-game", produces = "application/json")
     public ResponseEntity<GameResponse> createGame(@RequestBody StartGameDTO startGameDTO, @RequestHeader("Authorization") String token) {
-        return gameService.createGame(startGameDTO.getType(), token, 2);
+        return gameService.createGame(startGameDTO.getType(), token, 1);
     }
 
 

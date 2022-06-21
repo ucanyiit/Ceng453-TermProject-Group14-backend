@@ -52,6 +52,10 @@ public class Game {
         this.turn %= this.playerCount;
     }
 
+    public void addPlayer(Player player) {
+        this.playersIn.add(player);
+    }
+
     public void incrementRepeatedDiceCount() {
         this.repeatedDiceCount += 1;
     }
