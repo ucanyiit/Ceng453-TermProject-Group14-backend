@@ -83,7 +83,7 @@ public class GameService implements IGameService {
             List<Game> allGames = new ArrayList<>();
             gameRepository.findAll().forEach(allGames::add);
             for (Game game : allGames) {
-                if (game.getType().equals(GameType.MULTIPLAYER)
+                if (game.getType() != null && game.getType().equals(GameType.MULTIPLAYER)
                         && game.getPlayersIn().size() == 1
                         && !game.getPlayersIn().get(0).getUser().getUsername().equals(username)) {
                     Player player = new Player(userRepository.findByUsername(username), game, 1);
