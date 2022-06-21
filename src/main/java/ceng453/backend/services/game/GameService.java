@@ -28,7 +28,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -81,6 +83,35 @@ public class GameService implements IGameService {
 
         return new GameResponse(true, "Game is created.", IGameService.getGameDTO(game, playerRepository, tileRepository))
                 .prepareResponse(HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<GameResponse> getCurrentStateGame(int gameId, String token) {
+        String username;
+        try {
+            username = helper.getUsernameFromToken(token);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return new GameResponse(false, "Authentication failed.", null).prepareResponse(HttpStatus.UNAUTHORIZED);
+        }
+        Game game = gameRepository.findById(gameId).orElse(null);
+        if (game == null) {
+            return new GameResponse(false, "Game does not exist.", null).prepareResponse(HttpStatus.NOT_FOUND);
+        }
+
+        User user = userRepository.findByUsername(username);
+        if (user == null) {
+            return new GameResponse(false, "User does not exist.", null).prepareResponse(HttpStatus.NOT_FOUND);
+        }
+
+        Player player = playerRepository.findByUserAndGame(user, game);
+        if (player == null) {
+            return new GameResponse(false, "You are not a player in this game.", null).prepareResponse(HttpStatus.NOT_FOUND);
+        }
+
+        return new GameResponse(true, "Game is retrieved.", IGameService.getGameDTO(game, playerRepository, tileRepository))
+                .prepareResponse(HttpStatus.OK);
+
     }
 
     public ResponseEntity<DiceResponse> rollDice(int gameId, String token) {
