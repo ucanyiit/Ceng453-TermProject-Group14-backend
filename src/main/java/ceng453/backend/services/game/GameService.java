@@ -6,10 +6,7 @@ import ceng453.backend.models.DTOs.game.GameDTO;
 import ceng453.backend.models.DTOs.game.NextTurnDTO;
 import ceng453.backend.models.actions.Action;
 import ceng453.backend.models.actions.CheatAction;
-import ceng453.backend.models.database.Game;
-import ceng453.backend.models.database.Player;
-import ceng453.backend.models.database.Score;
-import ceng453.backend.models.database.User;
+import ceng453.backend.models.database.*;
 import ceng453.backend.models.enums.ActionType;
 import ceng453.backend.models.enums.GameType;
 import ceng453.backend.models.responses.BaseResponse;
@@ -254,7 +251,67 @@ public class GameService implements IGameService {
 
     @Override
     public ResponseEntity<BaseResponse> buyProperty(int gameId, int location, String token) {
-        return new BaseResponse(false, "Not implemented yet").prepareResponse(HttpStatus.NOT_IMPLEMENTED);
+        String username;
+        try {
+            username = helper.getUsernameFromToken(token);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return new GameResponse(false, "Authentication failed.", null).prepareResponse(HttpStatus.UNAUTHORIZED);
+        }
+
+        Game game = gameRepository.findById(gameId).orElse(null);
+
+        if (game == null) // game id check
+            return new GameResponse(false, "Game id not found", null)
+                    .prepareResponse(HttpStatus.NOT_FOUND);
+
+        User buyer = userRepository.findByUsername(username);
+        if (buyer == null)
+            return new GameResponse(false, "User not found", null)
+                    .prepareResponse(HttpStatus.NOT_FOUND);
+
+        TileComposition tileComposition = tileService.getTileComposition(gameId, location);
+        if (tileComposition == null)
+            return new GameResponse(false, "Tile not found", null)
+                    .prepareResponse(HttpStatus.NOT_FOUND);
+
+        Tile tile = tileComposition.getTile();
+        User seller = tile
+                .getOwner()
+                .getUser();
+
+        Player playerBuyer = playerRepository.findByUserAndGame(buyer, game);
+        Player playerSeller = playerRepository.findByUserAndGame(seller, game);
+
+        if (playerBuyer == null || playerSeller == null)
+            return new GameResponse(false, "Players not found", null)
+                    .prepareResponse(HttpStatus.NOT_FOUND);
+
+        int propertyCost = tileComposition
+                .getTile()
+                .getPrice();
+
+        boolean isValidRequest =
+                !seller.getUsername().equals(username) // if different player sells the property
+                && propertyCost <= playerBuyer.getMoney();
+
+        if (isValidRequest) {
+            playerBuyer.setMoney(playerBuyer.getMoney() - propertyCost);
+            playerSeller.setMoney(playerSeller.getMoney() + propertyCost);
+            tile.setOwner(playerBuyer);
+
+            playerRepository.save(playerBuyer);
+            playerRepository.save(playerSeller);
+            tileRepository.save(tile);
+
+            return new BaseResponse(true, "The property is bought successfully")
+                    .prepareResponse(HttpStatus.OK);
+        };
+
+
+
+        return new BaseResponse(false, "User not qualified to buy the property")
+                .prepareResponse(HttpStatus.BAD_REQUEST);
     }
 
     @Override
